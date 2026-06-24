@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import AddressAutocomplete from '@/app/components/AddressAutocomplete';
 
 
 
@@ -190,7 +191,7 @@ export default function ProfilePage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Name</label>
+                  <label className="text-black block text-sm font-medium mb-2">Name</label>
                   <input
                     type="text"
                     name="name"
@@ -202,7 +203,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
+                  <label className="text-black block text-sm font-medium mb-2">Email</label>
                   <input
                     type="email"
                     name="email"
@@ -231,18 +232,26 @@ export default function ProfilePage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    placeholder="Start typing to search for address..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg disabled:bg-gray-100"
-                  />
+                  <div>
+                    <label className="text-black block text-sm font-medium mb-2">
+                      Address
+                    </label>
+                    <AddressAutocomplete
+                      value={formData.address}
+                      onChange={(address, lat, lng) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          address: address,
+                          latitude: lat,
+                          longitude: lng,
+                        }));
+                      }}
+                      disabled={!isEditing}
+                    />
+                    <p className="text-xs text-black mt-2">
+                      Start typing and select from suggestions
+                    </p>
+                  </div>
                   <p className="text-xs text-black mt-2">
                     (Will have Google Maps autocomplete)
                   </p>
@@ -252,7 +261,7 @@ export default function ProfilePage() {
                   <button
                     onClick={handleSaveProfile}
                     disabled={loading}
-                    className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 disabled:opacity-50"
+                    className="text-black w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 disabled:opacity-50"
                   >
                     {loading ? 'Saving...' : 'Save Address'}
                   </button>
@@ -263,7 +272,7 @@ export default function ProfilePage() {
             {/* Map Section */}
             {/* Map Section */}
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                  <h2 className="text-2xl font-bold mb-4">Location Map</h2>
+                  <h2 className="text-black text-2xl font-bold mb-4">Location Map</h2>
 
                   <MapContainer
                     center={[formData.latitude || 20.5937, formData.longitude || 78.9629]}

@@ -1,47 +1,30 @@
 'use client';
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
-interface MapComponentProps {
+interface MapContentProps {
   latitude: number;
   longitude: number;
   address?: string;
 }
 
-const defaultIcon = L.icon({
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-
-L.Marker.prototype.setIcon(defaultIcon);
-
-export default function MapComponent({
+export default function MapContent({
   latitude,
   longitude,
   address,
-}: MapComponentProps) {
-  const center = latitude && longitude ? [latitude, longitude] : [20.5937, 78.9629];
+}: MapContentProps) {
+  const lat = latitude || 20.5937;
+  const lng = longitude || 78.9629;
+  const zoom = latitude && longitude ? 15 : 4;
+
+  // Geoapify static map URL
+  const mapUrl = `https://maps.geoapify.com/v1/staticmap?style=osm-bright&width=800&height=400&center=lonlat:${lng},${lat}&zoom=${zoom}&marker=lonlat:${lng},${lat}&apiKey=${process.env.NEXT_PUBLIC_GEOAPIFY_API}`;
 
   return (
-    <MapContainer
-      center={center as any}
-      zoom={latitude && longitude ? 15 : 4}
-      scrollWheelZoom={false}
-      style={{ width: '100%', height: '400px', borderRadius: '8px' }}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; OpenStreetMap contributors'
+    <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden' }}>
+      <img
+        src={mapUrl}
+        alt="Location Map"
+        style={{ width: '100%', height: '400px', display: 'block' }}
       />
-      {latitude && longitude && (
-        <Marker position={[latitude, longitude] as any} icon={defaultIcon}>
-          <Popup>{address || 'Your Location'}</Popup>
-        </Marker>
-      )}
-    </MapContainer>
+    </div>
   );
 }
