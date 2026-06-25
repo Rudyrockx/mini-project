@@ -99,6 +99,34 @@ export default function ProfilePage() {
     }
   };
 
+          useEffect(() => {
+          const fetchProfile = async () => {
+            try {
+              const res = await fetch('/api/profile');
+              const data = await res.json();
+
+              if (data.success && data.user) {
+                setFormData({
+                  name: data.user.name || '',
+                  email: data.user.email || '',
+                  address: data.user.address || '',
+                  latitude: data.user.latitude || 0,
+                  longitude: data.user.longitude || 0,
+                });
+                if (data.user.avatarUrl) {
+                  setAvatarUrl(data.user.avatarUrl);
+                }
+              }
+            } catch (error) {
+              console.error('Error fetching profile:', error);
+            }
+          };
+
+          if (session?.user) {
+            fetchProfile();
+          }
+        }, [session]);
+
   const handleDownloadProfile = async () => {
     try {
       const res = await fetch('/api/profile/download');
