@@ -32,44 +32,22 @@ export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
 
   const handleSelectPlan = async (planName: string, price: number, duration: number) => {
-    if (!session?.user?.id) {
-      router.push('/login');
-      return;
-    }
+  if (!session?.user?.id) {
+    router.push('/login');
+    return;
+  }
 
-    if (price === 0) {
-      // Free plan - no payment needed
-      await activatePlan(planName, duration, null);
-      return;
-    }
+  if (price === 0) {
+    // Free plan - no payment needed
+    await activatePlan(planName, duration, null);
+    return;
+  }
 
-    // Stripe payment for paid plans
-    setLoading(planName);
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          planName,
-          price,
-          duration,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.sessionId) {
-        // Redirect to Stripe Checkout
-        window.location.href = data.checkoutUrl;
-      } else {
-        alert('Failed to create checkout session');
-      }
-    } catch (error) {
-      alert('Error processing payment');
-    } finally {
-      setLoading(null);
-    }
+  // Redirect to mock payment page
+  router.push(`/mock-payment?plan=${planName}&price=${price}&duration=${duration}`);
   };
+
+   
 
   const activatePlan = async (
     planName: string,
