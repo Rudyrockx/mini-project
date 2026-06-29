@@ -34,7 +34,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (session?.user?.role !== 'admin') {
+    if (session?.user?.role?.toLowerCase() !== 'admin') {
       router.push('/dashboard');
       return;
     }

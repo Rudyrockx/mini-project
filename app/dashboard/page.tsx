@@ -59,6 +59,14 @@ export default async function DashboardPage() {
                 Sign Out
               </button>
             </form>
+            {session.user?.role === 'admin' && (
+              <Link
+                href="/admin"
+                className="inline-block bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
+              >
+                Admin Panel
+              </Link>
+            )}
           </div>
         </div>
 

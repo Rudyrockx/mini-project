@@ -110,6 +110,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   async session({ session, user }) {
     session.user.id = user.id;
+    session.user.role = (user as any).role;
     return session;
   },
 },

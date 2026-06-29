@@ -3,6 +3,7 @@ import { Outfit, Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import Navbar from './components/Navbar';
+import '@/app/api/cron/init/route';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -40,4 +41,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+}
