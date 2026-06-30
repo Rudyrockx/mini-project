@@ -1,11 +1,11 @@
 'use client';
-export const dynamic = 'force-dynamic';
+
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-
+export const dynamic = 'force-dynamic';
 interface User {
   id: string;
   name: string | null;
