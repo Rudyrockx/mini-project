@@ -1,10 +1,8 @@
-export const dynamic = 'force-dynamic';
-
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-
+export const dynamic = 'force-dynamic';
 export default function MockPaymentPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
