@@ -1,7 +1,7 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -87,7 +87,7 @@ export default function AdminPage() {
             Back to Dashboard
           </Link>
         </div>
-
+      <Suspense fallback={<div>Loading...</div>}>
         {/* Search */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <form onSubmit={handleSearch} className="space-y-4">
@@ -111,6 +111,7 @@ export default function AdminPage() {
             </button>
           </form>
         </div>
+        </Suspense>
 
         {/* User Table */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
