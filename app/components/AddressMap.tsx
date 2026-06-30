@@ -1,7 +1,11 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useMemo } from 'react';
+
+const MapContent = dynamic(
+  () => import('@/app/components/MapComponent'),
+  { ssr: false, loading: () => <p>Loading map...</p> }
+);
 
 interface AddressMapProps {
   latitude: number;
@@ -14,17 +18,8 @@ export default function AddressMap({
   longitude,
   address,
 }: AddressMapProps) {
-  const MapComponent = useMemo(
-    () =>
-      dynamic(() => import('@/app/components/MapComponent'), {
-        loading: () => <p>Loading map...</p>,
-        ssr: false,
-      }),
-    []
-  );
-
   return (
-    <MapComponent
+    <MapContent
       latitude={latitude}
       longitude={longitude}
       address={address}
