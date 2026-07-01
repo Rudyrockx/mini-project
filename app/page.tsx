@@ -75,7 +75,7 @@ export default function Home() {
 
           {/* Description */}
           <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-            A secure, minimalist dashboard designed to manage your credentials, perform real-time address validation, visualize markers on dynamic maps, and generate custom PDF profiles.
+           This is a mock minimalist dashboard.
           </p>
 
           {/* Call to Actions (CTAs) */}
@@ -142,7 +142,7 @@ export default function Home() {
                     : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border border-transparent'
                 }`}
               >
-                👤 Profile Settings
+                Profile Settings
               </button>
               <button
                 onClick={() => setActiveTab('search')}
@@ -152,7 +152,7 @@ export default function Home() {
                     : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border border-transparent'
                 }`}
               >
-                🔍 Address Lookup
+                 Address Lookup
               </button>
               <button
                 onClick={() => setActiveTab('map')}
@@ -162,7 +162,7 @@ export default function Home() {
                     : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border border-transparent'
                 }`}
               >
-                🗺️ Location Mapping
+                 Location Mapping
               </button>
               <button
                 onClick={() => setActiveTab('pdf')}
@@ -172,7 +172,7 @@ export default function Home() {
                     : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border border-transparent'
                 }`}
               >
-                📄 PDF Report
+                 PDF Report
               </button>
             </div>
 
