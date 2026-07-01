@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'GeoProfile | Premium Profile & Map Dashboard',
+  title: 'Mini-Project | Premium Profile & Map Dashboard',
   description: 'Manage your profile details, locate addresses via autocomplete on interactive maps, and purchase premium subscription plans.',
 };
 
