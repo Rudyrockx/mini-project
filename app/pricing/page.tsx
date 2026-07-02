@@ -10,29 +10,23 @@ const plans = [
     name: 'Free',
     price: 0,
     duration: 1,
-    features: ['1 hour access', 'Basic profile', 'Address management'],
+    features: ['1 Day access', 'Basic profile', 'Address management'],
+    downsides: ['Limited Access', 'No free delivery'],
     color: 'border-zinc-200 dark:border-zinc-800',
     btnStyle: 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200',
     popular: false,
   },
   {
-    name: 'Silver',
+    name: 'Premium',
     price: 999,
-    duration: 6,
-    features: ['6 hours access', 'Full profile', 'Map display', 'Priority support'],
+    duration: 30,
+    features: ['30 days access', 'Free delivery','Exclusive Discounts','Full profile', 'Priority support'],
+    downsides: [],
     color: 'border-indigo-200 dark:border-indigo-900/50 bg-indigo-50/10 dark:bg-indigo-950/5',
     btnStyle: 'bg-gradient-to-r from-indigo-500 to-indigo-650 hover:from-indigo-600 hover:to-indigo-755 text-white shadow-indigo-500/10',
-    popular: false,
-  },
-  {
-    name: 'Gold',
-    price: 2999,
-    duration: 12,
-    features: ['12 hours access', 'Premium profile', 'Analytics', '24/7 support'],
-    color: 'border-violet-500 shadow-xl shadow-violet-500/5 dark:shadow-violet-950/10 bg-violet-50/20 dark:bg-violet-950/10 scale-105 border-2',
-    btnStyle: 'bg-gradient-to-r from-violet-500 to-fuchsia-600 hover:from-violet-650 hover:to-fuchsia-700 text-white shadow-violet-550/20',
     popular: true,
   },
+ 
 ];
 
 export default function PricingPage() {
@@ -99,16 +93,15 @@ export default function PricingPage() {
             Choose Your Plan
           </h1>
           <p className="text-sm text-zinc-650 dark:text-zinc-400">
-            Upgrade your account to unlock longer map access durations, dynamic analytics, and premium verified widgets.
-          </p>
+            Upgrade your account to shop with a premium expirience. </p>
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center pt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative rounded-3xl p-8 bg-white/40 dark:bg-zinc-900/40 border backdrop-blur-md hover:scale-[1.03] transition-all duration-300 ${plan.color}`}
+              className={`relative flex flex-col justify-between h-full rounded-3xl p-8 bg-white/40 dark:bg-zinc-900/40 border backdrop-blur-md hover:scale-[1.03] transition-all duration-300 ${plan.color}`}
             >
               {plan.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
@@ -116,43 +109,63 @@ export default function PricingPage() {
                 </div>
               )}
 
-              <div className="mb-6">
-                <h3 className="font-heading text-xl font-bold text-zinc-900 dark:text-zinc-150">
-                  {plan.name} Plan
-                </h3>
-                <div className="flex items-baseline mt-4 mb-1">
-                  <span className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-50 font-heading">
-                    Rs. {plan.price}
-                  </span>
-                  <span className="text-xs text-zinc-650 dark:text-zinc-400 ml-2">
-                    / flat rate
-                  </span>
+              <div>
+                <div className="mb-6">
+                  <h3 className="font-heading text-xl font-bold text-zinc-900 dark:text-zinc-150">
+                    {plan.name} Plan
+                  </h3>
+                  <div className="flex items-baseline mt-4 mb-1">
+                    <span className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-50 font-heading">
+                      Rs. {plan.price}
+                    </span>
+                    <span className="text-xs text-zinc-650 dark:text-zinc-400 ml-2">
+                      / flat rate
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-450 uppercase font-semibold tracking-wider">
+                    ⏱️ {plan.duration} Hour{plan.duration > 1 ? 's' : ''} total Access
+                  </p>
                 </div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-450 uppercase font-semibold tracking-wider">
-                  ⏱️ {plan.duration} Hour{plan.duration > 1 ? 's' : ''} total Access
-                </p>
-              </div>
 
-              {/* Feature Perks List */}
-              <ul className="space-y-3.5 border-t border-zinc-200/50 dark:border-zinc-800/30 pt-6 mb-8">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center gap-3 text-sm text-zinc-700 dark:text-zinc-300">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="w-4 h-4 text-emerald-550 flex-shrink-0"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+                {/* Feature Perks List */}
+                <ul className="space-y-3.5 border-t border-zinc-200/50 dark:border-zinc-800/30 pt-6 ">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center gap-3 text-sm text-zinc-700 dark:text-zinc-300">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="w-4 h-4 text-emerald-550 flex-shrink-0"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <ul className="space-y-3.5 border-t border-zinc-200/50 dark:border-zinc-800/30 pt-3 mb-8">
+                  {plan.downsides.map((downside, idx) => (
+                    <li key={idx} className="flex items-center gap-3 text-sm text-zinc-700 dark:text-zinc-300">
+                      
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 150 150"
+                        fill="currentColor"
+                        className="w-4 h-4 text-red-550 flex-shrink-0">
+                        <path 
+                          d="M6,6H6a20.53,20.53,0,0,1,29,0l26.5,26.49L87.93,6a20.54,20.54,0,0,1,29,0h0a20.53,20.53,0,0,1,0,29L90.41,61.44,116.9,87.93a20.54,20.54,0,0,1,0,29h0a20.54,20.54,0,0,1-29,0L61.44,90.41,35,116.9a20.54,20.54,0,0,1-29,0H6a20.54,20.54,0,0,1,0-29L32.47,61.44,6,34.94A20.53,20.53,0,0,1,6,6Z"
+                        />
+                      </svg>
+                      <span>{downside}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
               {/* Action Button */}
               <button

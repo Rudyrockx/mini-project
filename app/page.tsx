@@ -3,11 +3,138 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  price: string;
+  rating: number;
+  image: string;
+  badge?: string;
+}
+
+const products: Product[] = [
+  {
+    id: 1,
+    name: "Sonic Aura Headphones",
+    category: "Audio",
+    price: "$299.00",
+    rating: 4.8,
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80",
+    badge: "Best Seller",
+  },
+  {
+    id: 2,
+    name: "Chronos Watch",
+    category: "Accessories",
+    price: "$189.00",
+    rating: 4.9,
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=80",
+    badge: "New",
+  },
+  {
+    id: 3,
+    name: "Optic Classic Sunglasses",
+    category: "Eyewear",
+    price: "$145.00",
+    rating: 4.6,
+    image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    id: 4,
+    name: "Veloce Sport Sneaker",
+    category: "Footwear",
+    price: "$120.00",
+    rating: 4.7,
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=80",
+    badge: "Trending",
+  },
+  {
+    id: 5,
+    name: "Terra Trail Boots",
+    category: "Footwear",
+    price: "$210.00",
+    rating: 4.5,
+    image: "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    id: 6,
+    name: "Instant Snap Camera",
+    category: "Photography",
+    price: "$99.00",
+    rating: 4.4,
+    image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    id: 7,
+    name: "Retro Synth Radio",
+    category: "Audio",
+    price: "$150.00",
+    rating: 4.7,
+    image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500&auto=format&fit=crop&q=80",
+    badge: "Limited",
+  },
+  {
+    id: 8,
+    name: "Arcade Lounge Chair",
+    category: "Furniture",
+    price: "$340.00",
+    rating: 4.9,
+    image: "https://images.unsplash.com/photo-1503602642458-232111445657?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    id: 9,
+    name: "Neo Kinetic Trainers",
+    category: "Footwear",
+    price: "$135.00",
+    rating: 4.8,
+    image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    id: 10,
+    name: "Aetheria Balancing Serum",
+    category: "Skincare",
+    price: "$65.00",
+    rating: 4.6,
+    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80",
+  },
+  {
+    id: 11,
+    name: "Apex Ultra Laptop",
+    category: "Computers",
+    price: "$1,299.00",
+    rating: 4.9,
+    image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=500&auto=format&fit=crop&q=80",
+    badge: "Hot Buy",
+  },
+  {
+    id: 12,
+    name: "Vantage Leather Duffel",
+    category: "Luggage",
+    price: "$275.00",
+    rating: 4.8,
+    image: "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=500&auto=format&fit=crop&q=80",
+  },
+];
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'profile' | 'search' | 'map' | 'pdf'>('profile');
   const [typedAddress, setTypedAddress] = useState('');
   const [uploadState, setUploadState] = useState<'idle' | 'uploading' | 'done'>('idle');
   const [isPdfExporting, setIsPdfExporting] = useState(false);
+  const [likedProducts, setLikedProducts] = useState<number[]>([]);
+  const [addedProduct, setAddedProduct] = useState<string | null>(null);
+
+  const toggleLike = (id: number) => {
+    setLikedProducts((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const addToCart = (productName: string) => {
+    setAddedProduct(productName);
+    setTimeout(() => setAddedProduct(null), 2000);
+  };
 
   // Address Autocomplete simulation helper
   useEffect(() => {
@@ -60,16 +187,16 @@ export default function Home() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
             </span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
-              Welcome to the New Mini-Project
+            <span className="text-[18px] font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
+              Welcome to Shopflix 
             </span>
           </div>
 
           {/* Heading with Elegant Font Pairing */}
           <h1 className="font-heading text-4xl sm:text-6xl font-extrabold tracking-tight bg-gradient-to-b from-zinc-955 to-zinc-700 dark:from-zinc-50 dark:to-zinc-300 bg-clip-text text-transparent leading-none">
-            Your Profile & Address, <br />
+            Explore our Vast Collection of <br />
             <span className="bg-gradient-to-r from-indigo-500 via-violet-600 to-indigo-550 bg-clip-text text-transparent">
-              Beautifully Unified
+              Premium Products
             </span>
           </h1>
 
@@ -109,6 +236,100 @@ export default function Home() {
             </Link>
           </div>
         </div>
+
+        {/* Product Showcase Section */}
+        <section className="w-full max-w-7xl py-12 px-4 sm:px-6 lg:px-8 border-t border-zinc-200/40 dark:border-zinc-800/40 mt-6 animate-fade-in">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-200/30 bg-indigo-50/20 dark:border-indigo-900/20 dark:bg-indigo-950/10 mb-3">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-650 dark:text-indigo-400">Featured Products</span>
+              </div>
+              <h2 className="font-heading text-2xl sm:text-4xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">
+                Curated Design, Premium Quality
+              </h2>
+              <p className="text-sm text-zinc-550 dark:text-zinc-400 mt-2 max-w-xl">
+                Explore our signature products crafted for ultimate style, durability, and functionality.
+              </p>
+            </div>
+            {/* Optional category filters or quick stats */}
+            <div className="flex items-center gap-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              <span className="px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-semibold">All Items</span>
+              <span className="px-3 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer">New Arrivals</span>
+              <span className="px-3 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer">Popular</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <div 
+                key={product.id} 
+                className="group relative flex flex-col rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white/40 dark:bg-zinc-900/20 backdrop-blur-md overflow-hidden transition-all hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1"
+              >
+                {/* Image Container */}
+                <div className="relative aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-950">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="h-full w-full object-cover object-center transition-all duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  {product.badge && (
+                    <span className="absolute top-3 left-3 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase bg-indigo-600 text-white dark:bg-indigo-500">
+                      {product.badge}
+                    </span>
+                  )}
+                  {/* Heart / Favorite Button */}
+                  <button 
+                    onClick={() => toggleLike(product.id)}
+                    className="absolute top-3 right-3 p-1.5 rounded-full border border-zinc-200/50 bg-white/80 dark:border-zinc-800/50 dark:bg-zinc-950/80 backdrop-blur-sm shadow-sm transition-all hover:scale-105 active:scale-95 group-hover:opacity-100 cursor-pointer"
+                  >
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill={likedProducts.includes(product.id) ? "currentColor" : "none"} 
+                      stroke="currentColor" 
+                      strokeWidth={2}
+                      className={`w-4 h-4 transition-colors ${
+                        likedProducts.includes(product.id) ? "text-rose-500" : "text-zinc-500 hover:text-rose-500"
+                      }`}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                    </svg>
+                  </button>
+                  {/* Subtle Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                </div>
+
+                {/* Content */}
+                <div className="p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] font-bold text-indigo-650 dark:text-indigo-400 uppercase tracking-wider">
+                      {product.category}
+                    </span>
+                    <h3 className="mt-1 text-sm font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      {product.name}
+                    </h3>
+                    <div className="flex items-center gap-1 mt-1">
+                      <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-bold">{product.rating}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 text-amber-500">
+                        <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.6 3.102-1.196 4.622c-.21.81.684 1.46 1.393.998L10 15.688l4.053 2.348c.709.462 1.602-.187 1.393-.998l-1.196-4.622 3.6-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <span className="text-sm font-extrabold text-zinc-900 dark:text-zinc-100">{product.price}</span>
+                    <button 
+                      onClick={() => addToCart(product.name)}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-all opacity-0 md:group-hover:opacity-100 group-focus:opacity-100 scale-95 hover:scale-100 active:scale-95 shadow-md cursor-pointer"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Showcase Device / Dashboard Mockup (Interactive) */}
         <div className="w-full max-w-4xl rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white/30 dark:bg-zinc-950/20 backdrop-blur-md shadow-2xl shadow-zinc-200/50 dark:shadow-black/50 overflow-hidden transition-all">
@@ -354,6 +575,20 @@ export default function Home() {
       <footer className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-[10px] tracking-wide text-zinc-400 dark:text-zinc-500 pt-12">
         &copy; {new Date().getFullYear()} Mini-Project Platform. All rights reserved. Built with minimalist design aesthetics.
       </footer>
+
+      {/* Toast Notification */}
+      <div 
+        className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-xl shadow-2xl border border-zinc-800 dark:border-zinc-200 transition-all duration-300 ${
+          addedProduct ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-indigo-500 dark:text-indigo-650">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <div className="text-xs font-semibold">
+          Added <span className="underline">{addedProduct}</span> to cart!
+        </div>
+      </div>
     </div>
   );
 }
