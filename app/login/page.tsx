@@ -13,29 +13,36 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
+  try {
+    console.log('Attempting login...', { email, password });
+    
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    });
 
-      if (result?.error) {
-        setError(result.error);
-        return;
-      }
+    console.log('SignIn result:', result);
 
-      router.push('/dashboard');
-    } catch (error) {
-      setError('An error occurred');
-    } finally {
-      setLoading(false);
+    if (result?.error) {
+      console.error('Login error:', result.error);
+      setError(result.error);
+      return;
     }
-  };
+
+    console.log('Login success, redirecting...');
+    router.push('/dashboard');
+  } catch (error) {
+    console.error('Catch error:', error);
+    setError('An error occurred');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleSocialSignIn = (provider: string) => {
     signIn(provider, { callbackUrl: '/dashboard' });
