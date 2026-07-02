@@ -40,7 +40,7 @@ export default function Navbar() {
                 </svg>
               </div>
               <span className="font-heading font-bold text-xl tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-700 dark:from-zinc-50 dark:to-zinc-300 bg-clip-text text-transparent">
-                Mini-Project
+                Shopflix
               </span>
             </Link>
 
