@@ -64,56 +64,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return true;
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email: user.email! },
-    });
-
-    if (existingUser) {
-      // Account already exists - link this provider to it
-      const existingAccount = await prisma.account.findUnique({
-        where: {
-          provider_providerAccountId: {
-            provider: account.provider,
-            providerAccountId: account.providerAccountId,
-          },
-        },
-      });
-
-      if (!existingAccount) {
-        // Link the social account to existing user
-        await prisma.account.create({
-          data: {
-            userId: existingUser.id,
-            provider: account.provider,
-            providerAccountId: account.providerAccountId,
-          },
-        });
-      }
-
-      // Mark email as verified for social logins
-      if (!existingUser.emailVerified) {
-        await prisma.user.update({
-          where: { id: existingUser.id },
-          data: { emailVerified: true },
-        });
-      }
-
-      return true;
-    } else {
-      // New social signup - mark email as verified automatically
+    // User was already created by the adapter, just verify email
+    if (user.id) {
       await prisma.user.update({
-        where: { email: user.email! },
+        where: { id: user.id },
         data: { emailVerified: true },
       });
-      return true;
     }
+
+    return true;
   },
   async session({ session, user }) {
-    session.user.id = user.id;
-    session.user.role = (user as any).role;
+    if (session.user) {
+      session.user.id = user.id;
+      session.user.role = user.role;
+    }
     return session;
   },
-},
+ },
 
 
 
