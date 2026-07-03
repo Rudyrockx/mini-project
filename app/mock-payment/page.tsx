@@ -84,7 +84,7 @@ export default function MockPaymentPage() {
             <span className="text-right text-zinc-800 dark:text-zinc-200 font-bold">{planName}</span>
             
             <span className="text-zinc-500 font-medium">Access Duration:</span>
-            <span className="text-right text-zinc-800 dark:text-zinc-200 font-semibold">{duration} Hours</span>
+            <span className="text-right text-zinc-800 dark:text-zinc-200 font-semibold">{duration} Days</span>
             
             <span className="text-zinc-500 font-medium border-t border-dashed border-zinc-200 dark:border-zinc-800 pt-3">Amount Due:</span>
             <span className="text-right text-indigo-650 dark:text-indigo-400 font-extrabold text-lg border-t border-dashed border-zinc-200 dark:border-zinc-800 pt-2 font-heading">
