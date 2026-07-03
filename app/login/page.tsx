@@ -24,6 +24,7 @@ export default function LoginPage() {
       email,
       password,
       redirect: false,
+       callbackUrl: '/dashboard',
     });
 
     console.log('SignIn result:', result);
@@ -35,7 +36,8 @@ export default function LoginPage() {
     }
 
     console.log('Login success, redirecting...');
-    router.push('/dashboard');
+    
+    window.location.href = '/dashboard';
   } catch (error) {
     console.error('Catch error:', error);
     setError('An error occurred');
