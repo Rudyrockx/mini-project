@@ -68,6 +68,16 @@ export default function Navbar() {
                   >
                     Profile
                   </Link>
+                  <Link
+                    href="/products"
+                    className={`text-sm font-medium transition-colors hover:text-indigo-600 dark:hover:text-indigo-400 ${
+                      isActive('/products')
+                        ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
+                        : 'text-zinc-600 dark:text-zinc-400'
+                    }`}
+                  >
+                    Products
+                  </Link>
                 </>
               )}
               <Link

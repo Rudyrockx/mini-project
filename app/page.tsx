@@ -259,289 +259,66 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <div 
-                key={product.id} 
-                className="group relative flex flex-col rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white/40 dark:bg-zinc-900/20 backdrop-blur-md overflow-hidden transition-all hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1"
-              >
-                {/* Image Container */}
-                <div className="relative aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-950">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-full w-full object-cover object-center transition-all duration-500 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  {product.badge && (
-                    <span className="absolute top-3 left-3 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase bg-indigo-600 text-white dark:bg-indigo-500">
-                      {product.badge}
-                    </span>
-                  )}
-                  {/* Heart / Favorite Button */}
-                  <button 
-                    onClick={() => toggleLike(product.id)}
-                    className="absolute top-3 right-3 p-1.5 rounded-full border border-zinc-200/50 bg-white/80 dark:border-zinc-800/50 dark:bg-zinc-950/80 backdrop-blur-sm shadow-sm transition-all hover:scale-105 active:scale-95 group-hover:opacity-100 cursor-pointer"
-                  >
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 24 24" 
-                      fill={likedProducts.includes(product.id) ? "currentColor" : "none"} 
-                      stroke="currentColor" 
-                      strokeWidth={2}
-                      className={`w-4 h-4 transition-colors ${
-                        likedProducts.includes(product.id) ? "text-rose-500" : "text-zinc-500 hover:text-rose-500"
-                      }`}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                  </button>
-                  {/* Subtle Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                </div>
+          {/* Product Grid */}
+<div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl">
+  {products.map((product) => (
+    <Link key={product.id} href={`/products/${product.id}`}>
+      <div className="group relative cursor-pointer bg-white dark:bg-zinc-900 rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden">
+        
+        {/* Product Image */}
+        <div className="relative overflow-hidden h-48 bg-zinc-100 dark:bg-zinc-800">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+          />
+          {product.badge && (
+            <span className="absolute top-2 right-2 px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full">
+              {product.badge}
+            </span>
+          )}
+        </div>
 
-                {/* Content */}
-                <div className="p-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    <span className="text-[10px] font-bold text-indigo-650 dark:text-indigo-400 uppercase tracking-wider">
-                      {product.category}
-                    </span>
-                    <h3 className="mt-1 text-sm font-bold text-zinc-900 dark:text-zinc-100 line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                      {product.name}
-                    </h3>
-                    <div className="flex items-center gap-1 mt-1">
-                      <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-bold">{product.rating}</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 text-amber-500">
-                        <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.6 3.102-1.196 4.622c-.21.81.684 1.46 1.393.998L10 15.688l4.053 2.348c.709.462 1.602-.187 1.393-.998l-1.196-4.622 3.6-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between mt-4">
-                    <span className="text-sm font-extrabold text-zinc-900 dark:text-zinc-100">{product.price}</span>
-                    <button 
-                      onClick={() => addToCart(product.name)}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 transition-all opacity-0 md:group-hover:opacity-100 group-focus:opacity-100 scale-95 hover:scale-100 active:scale-95 shadow-md cursor-pointer"
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Showcase Device / Dashboard Mockup (Interactive) */}
-        <div className="w-full max-w-4xl rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white/30 dark:bg-zinc-950/20 backdrop-blur-md shadow-2xl shadow-zinc-200/50 dark:shadow-black/50 overflow-hidden transition-all">
+        {/* Product Info */}
+        <div className="p-4 space-y-2">
+          <p className="text-xs text-gray-500">{product.category}</p>
+          <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 line-clamp-2">
+            {product.name}
+          </h3>
           
-          {/* Windows-style Header Bar */}
-          <div className="flex items-center justify-between px-4 py-3 bg-zinc-100/50 dark:bg-zinc-900/50 border-b border-zinc-200/40 dark:border-zinc-800/40">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-red-400/80" />
-              <span className="w-3 h-3 rounded-full bg-yellow-400/80" />
-              <span className="w-3 h-3 rounded-full bg-green-400/80" />
-            </div>
-            <div className="flex items-center justify-center gap-1 text-[11px] text-zinc-400 dark:text-zinc-500 font-mono select-none px-3 py-0.5 rounded bg-zinc-200/30 dark:bg-zinc-800/30 border border-zinc-200/30 dark:border-zinc-800/30">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 text-zinc-400">
-                <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
-              </svg>
-              geoprofile.app/dashboard
-            </div>
-            <div className="w-12" /> {/* spacer to balance buttons */}
+          {/* Rating */}
+          <div className="flex items-center gap-1">
+            <span className="text-yellow-500">★</span>
+            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+              {product.rating}
+            </span>
           </div>
 
-          {/* Interactive Workspace Area */}
-          <div className="grid grid-cols-1 md:grid-cols-4 min-h-[300px]">
-            
-            {/* Sidebar Navigation */}
-            <div className="md:col-span-1 border-r border-zinc-200/40 dark:border-zinc-800/40 p-4 flex flex-row md:flex-col gap-1 overflow-x-auto md:overflow-x-visible">
-              <button
-                onClick={() => setActiveTab('profile')}
-                className={`flex-1 md:flex-none flex items-center justify-center md:justify-start gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                  activeTab === 'profile'
-                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/30'
-                    : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border border-transparent'
-                }`}
-              >
-                Profile Settings
-              </button>
-              <button
-                onClick={() => setActiveTab('search')}
-                className={`flex-1 md:flex-none flex items-center justify-center md:justify-start gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                  activeTab === 'search'
-                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/30'
-                    : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border border-transparent'
-                }`}
-              >
-                 Address Lookup
-              </button>
-              <button
-                onClick={() => setActiveTab('map')}
-                className={`flex-1 md:flex-none flex items-center justify-center md:justify-start gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                  activeTab === 'map'
-                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/30'
-                    : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border border-transparent'
-                }`}
-              >
-                 Location Mapping
-              </button>
-              <button
-                onClick={() => setActiveTab('pdf')}
-                className={`flex-1 md:flex-none flex items-center justify-center md:justify-start gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                  activeTab === 'pdf'
-                    ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/30'
-                    : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border border-transparent'
-                }`}
-              >
-                 PDF Report
-              </button>
-            </div>
-
-            {/* Dynamic Screen View */}
-            <div className="md:col-span-3 p-6 flex flex-col justify-center bg-white/40 dark:bg-zinc-955/40">
-              
-              {/* Profile Screen */}
-              {activeTab === 'profile' && (
-                <div className="space-y-4 max-w-sm mx-auto w-full animate-fade-in">
-                  <div className="flex items-center gap-4">
-                    <div className="relative h-16 w-16 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-900 flex items-center justify-center text-xl font-bold text-zinc-600 dark:text-zinc-400 overflow-hidden shadow-inner">
-                      {uploadState === 'done' ? (
-                        <span className="text-zinc-800 dark:text-zinc-100 font-sans">JD</span>
-                      ) : (
-                        '?'
-                      )}
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">John Doe</p>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">john.doe@example.com</p>
-                    </div>
-                  </div>
-                  <div className="border border-zinc-200/50 dark:border-zinc-800/30 rounded-xl p-3.5 bg-zinc-50/50 dark:bg-zinc-900/20">
-                    <p className="text-[11px] text-zinc-400 dark:text-zinc-500 uppercase font-bold tracking-wider mb-1.5">Avatar Status</p>
-                    <button
-                      onClick={triggerUpload}
-                      className="w-full flex items-center justify-center gap-2 text-xs font-semibold py-2 px-3 border border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700 bg-white dark:bg-zinc-900 rounded-lg shadow-sm hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
-                    >
-                      {uploadState === 'idle' && (
-                        <>
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-zinc-500">
-                            <path fillRule="evenodd" d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.242 4.242l7-7a3 3 0 000-4.242zM5.793 14.207a1 1 0 011.414-1.414l5.5 5.5a1 1 0 01-1.414 1.414l-5.5-5.5z" clipRule="evenodd" />
-                          </svg>
-                          Upload Custom Avatar
-                        </>
-                      )}
-                      {uploadState === 'uploading' && (
-                        <>
-                          <span className="w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                          Uploading to storage...
-                        </>
-                      )}
-                      {uploadState === 'done' && (
-                        <>
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-emerald-500">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
-                          </svg>
-                          <span className="text-emerald-600 dark:text-emerald-450 font-semibold">Avatar Uploaded!</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Search Screen */}
-              {activeTab === 'search' && (
-                <div className="space-y-4 max-w-sm mx-auto w-full animate-fade-in">
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-zinc-450 dark:text-zinc-500 uppercase tracking-wider">Autocomplete Address Finder</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        readOnly
-                        value={typedAddress}
-                        placeholder="Search location..."
-                        className="w-full text-xs py-2.5 pl-3 pr-8 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 font-mono text-zinc-700 dark:text-zinc-300 focus:outline-none"
-                      />
-                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 rounded text-[9px] flex items-center justify-center text-zinc-450 font-mono shadow-sm">⌘K</span>
-                    </div>
-                  </div>
-                  {typedAddress.length > 5 && (
-                    <div className="border border-indigo-100/50 dark:border-indigo-900/20 bg-indigo-50/20 dark:bg-indigo-950/10 rounded-xl p-3.5 space-y-2">
-                      <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-zinc-400 dark:text-zinc-500 font-semibold">COORDINATES FOUND</span>
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-650 dark:text-emerald-400 font-bold uppercase scale-90">Validated</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-xs font-mono text-indigo-600 dark:text-indigo-400 font-bold">
-                        <div>Lat: 37.4220° N</div>
-                        <div>Lng: -122.0841° W</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Map Screen */}
-              {activeTab === 'map' && (
-                <div className="max-w-sm mx-auto w-full space-y-3.5 animate-fade-in">
-                  <div className="relative h-36 border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/40 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center">
-                    
-                    {/* Simulated Map Visual */}
-                    <div className="absolute inset-0 opacity-40 dark:opacity-20 bg-grid-pattern scale-110 pointer-events-none" />
-                    
-                    {/* Pulsing Pin Marker */}
-                    <div className="relative z-10 flex flex-col items-center">
-                      <div className="relative flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-455 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-violet-600"></span>
-                      </div>
-                      <div className="h-6 w-0.5 bg-violet-600/80 rounded-full" />
-                      <div className="px-2.5 py-1.5 rounded-xl border border-violet-100 dark:border-violet-950 bg-white/95 dark:bg-zinc-950/95 shadow-lg text-[9px] font-bold text-zinc-800 dark:text-zinc-200 -mt-1 backdrop-blur-sm select-none">
-                        📍 Googleplex, CA
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-center text-[10px] text-zinc-400 dark:text-zinc-500 italic">
-                    Visualized dynamically using interactive OpenStreetMap layers.
-                  </div>
-                </div>
-              )}
-
-              {/* PDF Screen */}
-              {activeTab === 'pdf' && (
-                <div className="space-y-4 max-w-sm mx-auto w-full animate-fade-in text-center">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-600 border border-zinc-200/50 dark:border-zinc-800/50 mx-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Profile Summary PDF</p>
-                    <p className="text-[11px] text-zinc-450 dark:text-zinc-500">Includes verification status and geographical coordinates.</p>
-                  </div>
-                  <button
-                    onClick={triggerPdfExport}
-                    className="w-full max-w-[200px] flex items-center justify-center gap-2 text-xs font-semibold py-2 px-4 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-xl shadow-sm transition-all mx-auto cursor-pointer"
-                  >
-                    {isPdfExporting ? (
-                      <>
-                        <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        Generating Document...
-                      </>
-                    ) : (
-                      <>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                          <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v6.59l1.95-2.1a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0L6.2 9.26a.75.75 0 111.1-1.02l1.95 2.1V3.75A.75.75 0 0110 3zm-5 9a.75.75 0 01.75.75v1.5a.25.25 0 00.25.25h8a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 0113.25 16H6.75A1.75 1.75 0 015 14.25v-1.5A.75.75 0 015 12z" clipRule="evenodd" />
-                        </svg>
-                        Download PDF
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-
-            </div>
+          {/* Price & Like */}
+          <div className="flex justify-between items-center pt-2 border-t border-zinc-200 dark:border-zinc-700">
+            <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+              {product.price}
+            </span>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                toggleLike(product.id);
+                addToCart(product.name);
+              }}
+              className="text-lg transition"
+            >
+              {likedProducts.includes(product.id) ? '❤️' : '🤍'}
+            </button>
           </div>
         </div>
+      </div>
+    </Link>
+  ))}
+</div>
+        </section>
+
+        
+           
 
         {/* Minimalist Grid-less Feature Highlights */}
         <div className="w-full max-w-4xl py-6 border-t border-zinc-200/50 dark:border-zinc-800/30">
