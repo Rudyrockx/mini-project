@@ -38,13 +38,15 @@ export default function ProductDetailPage() {
     }
   };
   const handleAddToCart = async () => {
-    if (!product) {
+  if (!product) {
     alert('Product not found');
     return;
   }
+
   try {
     const res = await fetch('/api/cart/add', {
       method: 'POST',
+      credentials: 'include',  // ← Add this line
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         productId: product.id,
