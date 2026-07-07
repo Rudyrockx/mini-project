@@ -90,6 +90,10 @@ export default function Navbar() {
               >
                 Pricing
               </Link>
+              <Link href="/cart" className="text-blue-500 hover:underline"
+              >
+               Cart
+              </Link>
             </div>
           </div>
 

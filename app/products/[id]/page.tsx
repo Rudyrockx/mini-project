@@ -37,6 +37,31 @@ export default function ProductDetailPage() {
       setLoading(false);
     }
   };
+  const handleAddToCart = async () => {
+    if (!product) {
+    alert('Product not found');
+    return;
+  }
+  try {
+    const res = await fetch('/api/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: product.id,
+        quantity,
+      }),
+    });
+
+    if (res.ok) {
+      alert('Added to cart!');
+      setQuantity(1);
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+  }
+};
+
+  
 
   if (loading) {
     return <div className="p-8 text-center">Loading product...</div>;
@@ -124,15 +149,16 @@ export default function ProductDetailPage() {
               </div>
 
               <button
-                disabled={!product.inStock}
-                className={`w-full py-3 rounded-lg font-bold text-white transition ${
-                  product.inStock
-                    ? 'bg-blue-500 hover:bg-blue-600 cursor-pointer'
-                    : 'bg-gray-400 cursor-not-allowed'
-                }`}
-              >
-                {product.inStock ? 'Add to Cart' : 'Out of Stock'}
-              </button>
+  onClick={handleAddToCart}
+  disabled={!product.inStock}
+  className={`w-full py-3 rounded-lg font-bold text-white transition ${
+    product.inStock
+      ? 'bg-blue-500 hover:bg-blue-600 cursor-pointer'
+      : 'bg-gray-400 cursor-not-allowed'
+  }`}
+>
+  Add to Cart
+</button>
             </div>
           </div>
         </div>
