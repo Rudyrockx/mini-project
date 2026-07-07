@@ -66,27 +66,27 @@ export default function MockPaymentPage() {
               />
             </svg>
           </div>
-          <h1 className="font-heading text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <h1 className="font-heading text-3xl font-extrabold tracking-tight text-white-900 dark:text-white-50">
             Mock Checkout
           </h1>
-          <p className="text-sm text-zinc-650 dark:text-zinc-400 mt-2 text-center">
+          <p className="text-sm text-black-650 dark:text-black-400 mt-2 text-center">
             Complete your transaction sheet to activate your tier
           </p>
         </div>
 
         {/* Pricing Summary */}
         <div className="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl p-5 space-y-4">
-          <h4 className="text-xs font-bold text-zinc-450 dark:text-zinc-500 uppercase tracking-wider border-b border-zinc-200/30 dark:border-zinc-800/30 pb-2">
+          <h4 className="text-xs font-bold text-black-450 dark:text-black-500 uppercase tracking-wider border-b border-zinc-200/30 dark:border-zinc-800/30 pb-2">
             Order Summary
           </h4>
           <div className="grid grid-cols-2 gap-y-3 text-sm">
-            <span className="text-zinc-500 font-medium">Selected Tier:</span>
-            <span className="text-right text-zinc-800 dark:text-zinc-200 font-bold">{planName}</span>
+            <span className="text-white font-medium">Selected Tier:</span>
+            <span className="text-right text-white-800 dark:text-white-200 font-bold">{planName}</span>
             
-            <span className="text-zinc-500 font-medium">Access Duration:</span>
-            <span className="text-right text-zinc-800 dark:text-zinc-200 font-semibold">{duration} Days</span>
+            <span className="text-white font-medium">Access Duration:</span>
+            <span className="text-right text-white-800 dark:text-white-200 font-semibold">{duration} Days</span>
             
-            <span className="text-zinc-500 font-medium border-t border-dashed border-zinc-200 dark:border-zinc-800 pt-3">Amount Due:</span>
+            <span className="text-white font-medium border-t border-dashed border-zinc-200 dark:border-zinc-800 pt-3">Amount Due:</span>
             <span className="text-right text-indigo-650 dark:text-indigo-400 font-extrabold text-lg border-t border-dashed border-zinc-200 dark:border-zinc-800 pt-2 font-heading">
               Rs. {price}
             </span>
@@ -96,18 +96,18 @@ export default function MockPaymentPage() {
         {/* Stripe Mock Form fields */}
         <div className="space-y-4 pt-2">
           <div>
-            <label className="block text-xs font-semibold text-zinc-650 dark:text-zinc-400 mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-white dark:text-white-400 mb-1.5 uppercase tracking-wider">
               Cardholder Name
             </label>
             <input
               type="text"
               placeholder="John Doe"
-              className="w-full px-4 py-3 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 transition-all text-sm text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400"
+              className="w-full px-4 py-3 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 transition-all text-sm text-white-900 dark:text-white-50 placeholder:text-white-400"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-zinc-650 dark:text-zinc-400 mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-white dark:text-white-400 mb-1.5 uppercase tracking-wider">
               Card Information
             </label>
             <div className="relative">
@@ -115,9 +115,9 @@ export default function MockPaymentPage() {
                 type="text"
                 placeholder="4242  4242  4242  4242"
                 maxLength={19}
-                className="w-full pl-12 pr-4 py-3 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 transition-all text-sm text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400"
+                className="w-full pl-12 pr-4 py-3 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 transition-all text-sm text-white-900 dark:text-white-50 placeholder:text-white-400"
               />
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white-400">
                 💳
               </span>
             </div>
@@ -125,36 +125,36 @@ export default function MockPaymentPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-zinc-650 dark:text-zinc-400 mb-1.5 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-white dark:text-white-400 mb-1.5 uppercase tracking-wider">
                 Expiration Date
               </label>
               <input
                 type="text"
                 placeholder="MM / YY"
                 maxLength={5}
-                className="w-full px-4 py-3 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 transition-all text-sm text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400"
+                className="w-full px-4 py-3 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 transition-all text-sm text-white-900 dark:text-white-50 placeholder:text-white-400"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-zinc-650 dark:text-zinc-400 mb-1.5 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-white-650 dark:text-white-400 mb-1.5 uppercase tracking-wider">
                 CVC Code
               </label>
               <input
                 type="password"
                 placeholder="•••"
                 maxLength={3}
-                className="w-full px-4 py-3 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 transition-all text-sm text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400"
+                className="w-full px-4 py-3 bg-white/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 transition-all text-sm text-white-900 dark:text-white-50 placeholder:text-white-400"
               />
             </div>
           </div>
         </div>
 
         {/* Mock Payment Banner */}
-        <div className="flex gap-3 bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/20 dark:border-indigo-900/30 text-zinc-700 dark:text-zinc-300 p-4 rounded-2xl text-xs leading-relaxed">
+        <div className="flex gap-3 bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/20 dark:border-indigo-900/30 text-white-700 dark:text-white-300 p-4 rounded-2xl text-xs leading-relaxed">
           <span className="text-base">ℹ️</span>
           <div className="space-y-1">
-            <p className="font-semibold text-indigo-700 dark:text-indigo-400">Simulation Mode</p>
-            <p className="text-zinc-600 dark:text-zinc-400">
+            <p className="font-semibold text-base text-pink-700 dark:text-pink-400">Simulation Mode</p>
+            <p className="text-white-600 dark:text-white-400">
               This checkout operates in mock environment. Completing checkout activates subscription automatically.
             </p>
           </div>
@@ -179,7 +179,7 @@ export default function MockPaymentPage() {
 
           <button
             onClick={() => router.push('/pricing')}
-            className="w-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 py-3.5 rounded-2xl text-zinc-700 dark:text-zinc-300 font-semibold text-sm transition-all cursor-pointer"
+            className="w-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 py-3.5 rounded-2xl text-white-700 dark:text-white-300 font-semibold text-sm transition-all cursor-pointer"
           >
             Cancel Checkout
           </button>

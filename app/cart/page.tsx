@@ -33,22 +33,25 @@ export default function CartPage() {
   }, [session]);
 
   const fetchCart = async () => {
-    try {
-      const res = await fetch('/api/cart');
-      const data = await res.json();
-      setItems(data.items || []);
-      setTotal(data.total || 0);
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-    } finally {
-      setLoading(false);
-    }
+  try {
+    const res = await fetch('/api/cart', {
+      credentials: 'include',  // ← Add this
+    });
+    const data = await res.json();
+    setItems(data.items || []);
+    setTotal(data.total || 0);
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+  } finally {
+    setLoading(false);
+  }
   };
 
   const updateQuantity = async (itemId: string, quantity: number) => {
     try {
       await fetch('/api/cart/update', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ itemId, quantity }),
       });
@@ -123,7 +126,7 @@ export default function CartPage() {
                   <div className="flex items-center gap-4">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                      className="text-black px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
                     >
                       −
                     </button>
@@ -132,7 +135,7 @@ export default function CartPage() {
                     </span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                      className="text-black px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
                     >
                       +
                     </button>
@@ -180,9 +183,9 @@ export default function CartPage() {
               <span>${(total * 1.1).toFixed(2)}</span>
             </div>
 
-            <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 mb-3">
+            <Link href="/mock-payment" className="w-full block text-center bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 mb-3">
               Proceed to Checkout
-            </button>
+            </Link>
             <Link href="/products" className="w-full block text-center bg-gray-200 text-black py-3 rounded-lg font-bold hover:bg-gray-300">
               Continue Shopping
             </Link>

@@ -24,7 +24,7 @@ export async function GET() {
 
         if (!cart) {
             return NextResponse.json({ items: [], total: 0 });
-    }
+             }
 
         // Calculate total
         const items = await Promise.all(

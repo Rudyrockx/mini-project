@@ -140,7 +140,7 @@ export default function ProductDetailPage() {
                 <select
                   value={quantity}
                   onChange={(e) => setQuantity(parseInt(e.target.value))}
-                  className="px-4 py-2 border border-gray-300 rounded-lg"
+                  className=" text-black px-4 py-2 border border-gray-300 rounded-lg"
                 >
                   {[1, 2, 3, 4, 5, 10].map((n) => (
                     <option key={n} value={n}>
