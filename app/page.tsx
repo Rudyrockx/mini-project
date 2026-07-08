@@ -113,7 +113,7 @@ const products: Product[] = [
     category: "Luggage",
     price: "₹275.00",
     rating: 4.8,
-    image: "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=500&auto=format&fit=crop&q=80",
+    image: "https://res.cloudinary.com/i7w6b6jf/image/upload/f_auto,q_auto/Screenshot_2026-03-27_113535_rqrrgk",
   },
 ];
 

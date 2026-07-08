@@ -32,6 +32,9 @@ const Popup = dynamic(
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [uploading, setUploading] =  useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
+  const [loading, setLoading] = useState(true);
 
   // Fix for default Leaflet icon marker issues in Next.js (client-side only)
   useEffect(() => {
@@ -56,8 +59,8 @@ export default function ProfilePage() {
     latitude: 0,
     longitude: 0,
   });
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  
+ 
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -82,16 +85,7 @@ export default function ProfilePage() {
     }));
   };
 
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setAvatarUrl(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  
 
   const handleSaveProfile = async () => {
     setLoading(true);
@@ -157,6 +151,38 @@ export default function ProfilePage() {
     }
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/upload/avatar', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        alert('Upload failed');
+        return;
+      }
+
+      const data = await res.json();
+      setAvatarUrl(data.avatarUrl);
+      alert('Avatar updated!');
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      alert('Upload error');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   if (status === 'loading') {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center gap-4">
@@ -210,59 +236,43 @@ export default function ProfilePage() {
         {/* Main Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Left Column - Avatar Upload */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/30 backdrop-blur-md rounded-3xl p-6 shadow-lg flex flex-col items-center">
-              <h3 className="font-heading text-lg font-bold text-zinc-900 dark:text-zinc-50 mb-6 text-center w-full border-b border-zinc-100 dark:border-zinc-800 pb-3">
-                Avatar Image
-              </h3>
+          {/* Avatar Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-black mb-4">Profile Picture</h2>
 
-              <div className="relative group w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950 shadow-inner flex items-center justify-center mb-6 transition-all duration-300">
-                {avatarUrl || session.user?.image ? (
-                  <Image
-                    src={avatarUrl || session.user?.image || ''}
-                    alt="Profile Avatar"
-                    width={300}
-                    height={300}
-                    className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"
-                  />
-                ) : (
-                  <div className="text-center p-4">
-                    <span className="text-4xl mb-2 block">👤</span>
-                    <span className="text-xs font-semibold text-zinc-500">No profile picture</span>
-                  </div>
-                )}
+          {/* Avatar Display */}
+          <div className="mb-6">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Profile"
+                className="w-32 h-32 rounded-full object-cover border-4 border-blue-500"
+              />
+            ) : (
+              <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+                No Photo
               </div>
-
-              {isEditing && (
-                <div className="w-full space-y-3">
-                  <label className="block text-xs font-semibold text-zinc-650 dark:text-zinc-400 uppercase tracking-wider text-center">
-                    Upload New Photo
-                  </label>
-                  <div className="relative flex items-center justify-center w-full h-24 border-2 border-dashed border-zinc-300 dark:border-zinc-800 rounded-2xl hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-all group cursor-pointer">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleProfilePictureChange}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                    />
-                    <div className="text-center pointer-events-none">
-                      <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-indigo-500 transition-colors">
-                        Click or drag image file
-                      </span>
-                      <p className="text-[10px] text-zinc-450 dark:text-zinc-500 mt-1">
-                        Supported formats: PNG, JPG, WEBP
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 justify-center bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100/30 dark:border-indigo-900/30
-                   text-indigo-700 dark:text-indigo-400 px-3 py-1.5 rounded-xl text-[10px] font-semibold uppercase tracking-wider">
-                    <span>☁️ Verified Upload via Storj</span>
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
           </div>
+
+          {/* Upload Button */}
+          <label className="inline-block">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              disabled={uploading}
+              className="hidden"
+            />
+            <button
+              onClick={(e) => e.currentTarget.parentElement?.querySelector('input')?.click()}
+              disabled={uploading}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400"
+            >
+              {uploading ? 'Uploading...' : 'Change Avatar'}
+            </button>
+          </label>
+        </div>
 
           {/* Right Column - Fields, Maps & Downloads */}
           <div className="lg:col-span-2 space-y-8">
