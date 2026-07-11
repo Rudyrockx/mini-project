@@ -183,7 +183,7 @@ export default function CartPage() {
               <span>${(total * 1.1).toFixed(2)}</span>
             </div>
 
-            <Link href="/mock-payment" className="w-full block text-center bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 mb-3">
+            <Link href="/checkout" className="w-full block text-center bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 mb-3">
               Proceed to Checkout
             </Link>
             <Link href="/products" className="w-full block text-center bg-gray-200 text-black py-3 rounded-lg font-bold hover:bg-gray-300">

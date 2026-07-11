@@ -20,7 +20,7 @@ model User {
   role          String    @default("user")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-
+  orders                Order[]
   accounts              Account[]
   verificationTokens    VerificationToken[]
   subscriptions         UserSubscription[]
@@ -111,4 +111,26 @@ model CartItem {
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+model Order {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     OrderItem[]
+  totalPrice Float
+  status    String   @default("pending") // pending, paid, shipped, delivered
+  razorpayPaymentId String?
+  razorpayOrderId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  quantity  Int
+  price     Float    // Price at time of purchase
+  createdAt DateTime @default(now())
 }

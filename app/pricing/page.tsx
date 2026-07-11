@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const plans = [
-  {
+  { id: 'plan-free',
     name: 'Free',
     price: 0,
     duration: 1,
@@ -16,7 +16,7 @@ const plans = [
     btnStyle: 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200',
     popular: false,
   },
-  {
+  { id: 'plan-premium',
     name: 'Premium',
     price: 999,
     duration: 30,
@@ -168,20 +168,12 @@ export default function PricingPage() {
               </div>
 
               {/* Action Button */}
-              <button
-                onClick={() => handleSelectPlan(plan.name, plan.price, plan.duration)}
-                disabled={loading !== null}
-                className={`w-full py-3.5 rounded-2xl text-sm font-semibold transition-all shadow-md active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 ${plan.btnStyle}`}
+              <Link
+                href={`/checkout?planId=${plan.id}`}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700"
               >
-                {loading === plan.name ? (
-                  <>
-                    <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  'Select plan'
-                )}
-              </button>
+                {plan.price === 0 ? 'Activate Free Plan' : 'Buy Now'}
+              </Link>
             </div>
           ))}
         </div>
