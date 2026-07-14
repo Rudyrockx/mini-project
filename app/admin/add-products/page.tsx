@@ -48,7 +48,7 @@ export default function AddProductsPage(){
                     name,
                     price: parseFloat(price),
                     category,
-                    description: '',
+                    description,
                     rating: 0,
                     reviews: 0,
                     inStock: true,
@@ -61,6 +61,7 @@ export default function AddProductsPage(){
                 setPrice('');
                 setCategory('');
                 setImage('');
+                setDescription('');
             }
             
         } catch (error) {

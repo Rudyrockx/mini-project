@@ -1,11 +1,10 @@
 'use client';
 
-
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-// export const dynamic = 'force-dynamic';
+
 interface User {
   id: string;
   name: string | null;
@@ -20,30 +19,50 @@ interface User {
   }>;
 }
 
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  image: string;
+}
+
 export default function AdminPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [page, setPage] = useState(parseInt(searchParams.get('page') || '1'));
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
     total: 0,
     pageSize: 10,
     totalPages: 1,
   });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!session) return;
+    if (status === 'loading') return;
     
-    if (session?.user?.role?.toLowerCase() !== 'admin') {
+    if (!session || session?.user?.role?.toLowerCase() !== 'admin') {
       router.push('/dashboard');
       return;
     }
 
     fetchUsers();
-  }, [session, page, search]);
+    fetchProducts();
+  }, [session, status, page, search]);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      setProducts(data.products || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -58,11 +77,6 @@ export default function AdminPage() {
       if (data.success) {
         setUsers(data.users);
         setPagination(data.pagination);
-        // Update URL
-        const newParams = new URLSearchParams();
-        newParams.set('page', page.toString());
-        if (search) newParams.set('search', search);
-        router.push(`/admin?${newParams.toString()}`, { scroll: false });
       }
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -75,6 +89,31 @@ export default function AdminPage() {
     e.preventDefault();
     setPage(1);
   };
+
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm('Delete this product?')) return;
+    
+    try {
+      const res = await fetch(`/api/admin/products/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      if (res.ok) {
+        alert('Product deleted!');
+        fetchProducts();
+      } else {
+        alert('Failed to delete');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error deleting product');
+    }
+  };
+
+  if (status === 'loading') {
+    return <div className="p-8 text-center">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -89,7 +128,10 @@ export default function AdminPage() {
             Back to Dashboard
           </Link>
         </div>
-      
+
+        {/* USERS SECTION */}
+        <h2 className="text-2xl font-bold text-black mb-4">Users</h2>
+        
         {/* Search */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <form onSubmit={handleSearch} className="space-y-4">
@@ -115,7 +157,7 @@ export default function AdminPage() {
         </div>
 
         {/* User Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-12">
           {loading ? (
             <div className="p-6 text-center text-black">Loading...</div>
           ) : users.length === 0 ? (
@@ -173,7 +215,7 @@ export default function AdminPage() {
 
         {/* Pagination */}
         {pagination.totalPages > 1 && (
-          <div className="mt-8 flex justify-center items-center gap-4">
+          <div className="mt-8 flex justify-center items-center gap-4 mb-12">
             <button
               onClick={() => setPage(Math.max(1, page - 1))}
               disabled={page === 1}
@@ -195,6 +237,55 @@ export default function AdminPage() {
             </button>
           </div>
         )}
+
+        {/* PRODUCTS SECTION */}
+        <h2 className="text-2xl font-bold text-black mb-4">Products</h2>
+        
+        <div className="flex justify-end mb-4">
+          <Link
+            href="/admin/add-products"
+            className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+          >
+            + Add Product
+          </Link>
+        </div>
+
+        {/* Products Table */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          {products.length === 0 ? (
+            <div className="p-6 text-center text-black">No products found</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-black font-semibold">Name</th>
+                    <th className="px-6 py-3 text-left text-black font-semibold">Category</th>
+                    <th className="px-6 py-3 text-left text-black font-semibold">Price</th>
+                    <th className="px-6 py-3 text-left text-black font-semibold">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((product) => (
+                    <tr key={product.id} className="border-t border-gray-200 hover:bg-gray-50">
+                      <td className="px-6 py-3 text-black">{product.name}</td>
+                      <td className="px-6 py-3 text-black">{product.category}</td>
+                      <td className="px-6 py-3 text-black">${product.price}</td>
+                      <td className="px-6 py-3">
+                        <button
+                          onClick={() => handleDeleteProduct(product.id)}
+                          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

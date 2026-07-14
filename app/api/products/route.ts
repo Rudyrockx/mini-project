@@ -8,38 +8,42 @@ export async function GET(request: NextRequest) {
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const minRating = searchParams.get('minRating');
-
-    console.log('Filter params received:', { category, minPrice, maxPrice, minRating });
+    const page = parseInt(searchParams.get('page') || '1');
+    const pageSize = 12; // Products per page
 
     const where: any = {};
 
-    if (category) {
-      where.category = category;
-      console.log('✅ Applied category filter:', category);
-    }
-
+    if (category) where.category = category;
     if (minPrice || maxPrice) {
       where.price = {};
       if (minPrice) where.price.gte = parseFloat(minPrice);
       if (maxPrice) where.price.lte = parseFloat(maxPrice);
-      console.log('✅ Applied price filter:', where.price);
     }
+    if (minRating) where.rating = { gte: parseFloat(minRating) };
 
-    if (minRating) {
-      where.rating = { gte: parseFloat(minRating) };
-      console.log('✅ Applied rating filter:', minRating);
-    }
+    // Get total count
+    const total = await prisma.product.count({ where });
 
-    console.log('📦 Where clause:', JSON.stringify(where));
-
+    // Get products for current page
     const products = await prisma.product.findMany({
-      where,  // ← THIS WAS MISSING!
+      where,
       orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
 
-    console.log('✅ Found products:', products.length);
+    const totalPages = Math.ceil(total / pageSize);
 
-    return NextResponse.json({ success: true, products });
+    return NextResponse.json({
+      success: true,
+      products,
+      pagination: {
+        total,
+        pageSize,
+        currentPage: page,
+        totalPages,
+      },
+    });
   } catch (error) {
     console.error('Error fetching products:', error);
     return NextResponse.json(
