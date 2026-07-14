@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic';
 interface User {
   id: string;
   name: string | null;
@@ -35,6 +35,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!session) return;
+    
     if (session?.user?.role?.toLowerCase() !== 'admin') {
       router.push('/dashboard');
       return;

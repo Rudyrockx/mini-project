@@ -1,10 +1,15 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from 'bcryptjs';
 import prisma from './db';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
+    GoogleProvider({
+    clientId: process.env.GOOGLE_CLIENT_ID || '',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+  }),
     CredentialsProvider({
       credentials: {
         email: { label: 'Email', type: 'email' },
@@ -27,20 +32,44 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
+  async signIn({ user, account }: any) {
+    if (account?.provider === 'google') {
+      try {
+        await prisma.user.upsert({
+          where: { email: user.email },
+          update: { name: user.name },
+          create: {
+            email: user.email,
+            name: user.name || '',
+            emailVerified: true,
+          },
+        });
+      } catch (error) {
+        console.error('❌ User creation failed:', error);
       }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub as string;
-        session.user.role = token.role as string;
-      }
-      return session;
-    },
+    }
+    return true;
+  },
+  async jwt({ token, user }: any) {
+    if (user) {
+      token.role = user.role;
+    } else if (token.sub) {
+      // Fetch role from DB on subsequent calls
+      const dbUser = await prisma.user.findUnique({
+        where: { id: token.sub },
+        select: { role: true },
+      });
+      token.role = dbUser?.role || 'user';
+    }
+    return token;
+  },
+  async session({ session, token }: any) {
+    if (session.user) {
+      session.user.id = token.sub;
+      session.user.role = token.role;
+    }
+    return session;
+  },
   },
   pages: { signIn: '/login' },
   session: { strategy: 'jwt' },

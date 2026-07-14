@@ -11,28 +11,62 @@ interface Product {
   rating: number;
   reviews: number;
   inStock: boolean;
+  category: string;
 }
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [minRating, setMinRating] = useState('');
+
+  const [categories, setCategories] = useState<string[]>([]);
+
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [selectedCategory, minPrice, maxPrice, minRating]);
 
   const fetchProducts = async () => {
+    setLoading(true);
     try {
-      const res = await fetch('/api/products');
+      const params = new URLSearchParams();
+      if (selectedCategory) params.append('category', selectedCategory);
+      if (minPrice) params.append('minPrice', minPrice);
+      if (maxPrice) params.append('maxPrice', maxPrice);
+      if (minRating) params.append('minRating', minRating);
+      
+      const url = `/api/products?${params.toString()}`;
+    console.log('🔗 Fetching URL:', url);
+    console.log('📊 State values:', { selectedCategory, minPrice, maxPrice, minRating });
+
+      const res = await fetch(url,{
+        cache: 'no-store',
+      });
       const data = await res.json();
       setProducts(data.products || []);
+
+
+      if (data.products) {
+        const cats = [...new Set(data.products.map((p: Product) => p.category))];
+        setCategories(cats as string[]);
+      }
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
     }
   };
-
+  const resetFilters=()=>{
+    setSelectedCategory('');
+    setMinPrice('');
+    setMaxPrice('');
+    setMinRating('');
+    
+  };
+  
   if (loading) {
     return <div className="p-8 text-center">Loading products...</div>;
   }
@@ -41,11 +75,76 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl font-bold text-black mb-8">Our Products</h1>
+        {/* Filters */}
+        <div className="bg-white rounded-lg shadow-md p-6 h-fit">
+            <h2 className="text-xl font-bold text-black mb-6">Filters</h2>
 
+            {/* Category */}
+            <div className="mb-6">
+              <label className="block text-sm font-semibold text-black mb-2">Category</label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full text-black px-3 py-2 border border-gray-300 rounded-lg"
+              >
+                <option value="">All Categories</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Price Range */}
+            <div className="mb-6">
+              <label className="block text-sm font-semibold text-black mb-2">Price Range</label>
+              <div className="space-y-2">
+                <input
+                  type="number"
+                  placeholder="Min Price"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  className="w-full text-black px-3 py-2 border border-gray-300 rounded-lg"
+                />
+                <input
+                  type="number"
+                  placeholder="Max Price"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  className="w-full text-black px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+            </div>
+
+            {/* Rating */}
+            <div className="mb-6">
+              <label className="block text-sm font-semibold text-black mb-2">Min Rating</label>
+              <select
+                value={minRating}
+                onChange={(e) => setMinRating(e.target.value)}
+                className="w-full px-3 text-black py-2 border border-gray-300 rounded-lg"
+              >
+                <option value="">All Ratings</option>
+                <option value="3">3+ Stars</option>
+                <option value="3.5">3.5+ Stars</option>
+                <option value="4">4+ Stars</option>
+                <option value="4.5">4.5+ Stars</option>
+              </select>
+            </div>
+
+            {/* Reset Button */}
+            <button
+              onClick={resetFilters}
+              className="w-full bg-gray-400 text-white py-2 rounded-lg hover:bg-gray-500"
+            >
+              Reset Filters
+            </button>
+          </div>  
         {products.length === 0 ? (
           <div className="text-center text-gray-600">No products available</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7 p-8 mt-8 ">
             {products.map((product) => (
               <Link key={product.id} href={`/products/${product.id}`}>
                 <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer h-full">
