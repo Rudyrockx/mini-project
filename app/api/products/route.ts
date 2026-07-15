@@ -12,6 +12,23 @@ export async function GET(request: NextRequest) {
     const pageSize = 12; // Products per page
 
     const where: any = {};
+    const search = searchParams.get('search');
+    if(search){
+      where.OR = [
+        {name: {
+          contains: search,
+          mode: "insensitive"
+        }},
+        {description: {
+          contains: search,
+          mode: "insensitive"
+        }},
+        {category: {
+          contains: search,
+          mode: "insensitive"
+        }}
+      ];
+    }
 
     if (category) where.category = category;
     if (minPrice || maxPrice) {

@@ -4,6 +4,18 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import {
+  User,
+  CreditCard,
+  Map,
+  Sparkles,
+  FileText,
+  ShoppingBag,
+  LogOut,
+  Settings,
+  AlertTriangle,
+  Clock
+} from 'lucide-react';
 
 interface ActiveSubscription {
   id: string;
@@ -109,9 +121,9 @@ export default function DashboardPage() {
 
   if (status === 'loading' || (session && loadingProfile)) {
     return (
-      <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center gap-4">
-        <div className="h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-        <span className="text-sm text-zinc-600 dark:text-zinc-400 font-medium">
+      <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center gap-4 bg-[#f8f9ff] dark:bg-zinc-950">
+        <div className="h-10 w-10 border-4 border-[#6c2ce6] border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm text-[#45464d] dark:text-zinc-400 font-medium">
           Loading dashboard services...
         </span>
       </div>
@@ -129,17 +141,17 @@ export default function DashboardPage() {
   const activeSub = profile?.activeSubscription;
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] p-4 sm:p-8 lg:p-12 overflow-hidden">
+    <div className="bg-[#f8f9ff] dark:bg-zinc-950 relative min-h-[calc(100vh-4rem)] p-4 sm:p-8 lg:p-12 overflow-hidden selection:bg-[#6c2ce6]/20">
       {/* Decorative ambient backgrounds */}
-      <div className="absolute top-10 left-10 w-80 h-80 rounded-full bg-indigo-500/5 blur-3xl animate-float" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-violet-500/5 blur-3xl animate-float-delayed" />
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#6c2ce6]/5 dark:bg-[#6c2ce6]/10 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#854eff]/5 dark:bg-[#854eff]/10 blur-3xl pointer-events-none" />
 
       <div className="relative z-10 max-w-6xl mx-auto space-y-8">
         
         {/* Top Header Card */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/30 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-zinc-900 border border-[#e5eeff] dark:border-zinc-800/30 rounded-3xl p-6 sm:p-8 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="relative h-16 w-16 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-indigo-500 to-violet-650 flex items-center justify-center shadow-md">
+            <div className="relative h-16 w-16 rounded-2xl overflow-hidden border border-[#e5eeff] dark:border-zinc-800 bg-gradient-to-br from-[#6c2ce6] to-[#854eff] flex items-center justify-center shadow-md shrink-0">
               {avatar ? (
                 <img src={avatar} alt={name} className="h-full w-full object-cover" />
               ) : (
@@ -149,30 +161,32 @@ export default function DashboardPage() {
               )}
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-heading text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-heading text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0b1c30] dark:text-zinc-50">
                   Welcome, {name}!
                 </h1>
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-350 border border-indigo-200/50 dark:border-indigo-900/30">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#6c2ce6]/10 text-[#6c2ce6] dark:bg-[#854eff]/10 dark:text-[#d0bcff] border border-[#6c2ce6]/25 dark:border-[#854eff]/20">
                   {role}
                 </span>
               </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              <p className="text-sm text-[#45464d] dark:text-zinc-400 mt-1">
                 {email} • Manage subscriptions, verified geolocations, and profile parameters.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
             <Link
               href="/profile"
-              className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-750 text-white text-sm font-semibold rounded-xl shadow-md transition-all hover:scale-[1.01] active:scale-[0.99]"
+              className="px-5 py-2.5 bg-[#6c2ce6] hover:bg-[#6c2ce6]/90 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center gap-1.5 cursor-pointer"
             >
+              <Settings className="w-4 h-4" />
               Account Settings
             </Link>
             <button
               onClick={() => signOut({ callbackUrl: '/login' })}
-              className="px-5 py-2.5 border border-red-200 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-950/20 text-red-650 dark:text-red-400 text-sm font-semibold rounded-xl transition-all cursor-pointer"
+              className="px-5 py-2.5 border border-rose-200 dark:border-rose-900/30 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-rose-650 dark:text-rose-400 text-sm font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
             >
+              <LogOut className="w-4 h-4" />
               Sign Out
             </button>
           </div>
@@ -185,32 +199,33 @@ export default function DashboardPage() {
           <div className="lg:col-span-2 space-y-8">
             
             {/* Quick Profile Summary Panel */}
-            <div className="bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/30 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-lg space-y-6">
-              <h3 className="font-heading text-lg font-bold text-zinc-900 dark:text-zinc-50 border-b border-zinc-150 dark:border-zinc-850 pb-3 flex items-center gap-2">
-                <span>👤</span> Account Overview
+            <div className="bg-white dark:bg-zinc-900 border border-[#e5eeff] dark:border-zinc-800/30 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+              <h3 className="font-heading text-lg font-bold text-[#0b1c30] dark:text-zinc-50 border-b border-[#e5eeff] dark:border-zinc-800 pb-3 flex items-center gap-2">
+                <User className="w-5 h-5 text-[#6c2ce6]" />
+                Account Overview
               </h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="p-4 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/30 border border-zinc-200/40 dark:border-zinc-800/30">
-                  <span className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">
+                <div className="p-4 rounded-2xl bg-[#f8f9ff] dark:bg-zinc-800/50 border border-[#e5eeff] dark:border-zinc-800/30">
+                  <span className="block text-[10px] font-bold text-[#45464d] uppercase tracking-wider mb-1">
                     Display Name
                   </span>
-                  <span className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
+                  <span className="text-sm font-bold text-[#0b1c30] dark:text-zinc-200">
                     {name}
                   </span>
                 </div>
                 
-                <div className="p-4 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/30 border border-zinc-200/40 dark:border-zinc-800/30">
-                  <span className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">
+                <div className="p-4 rounded-2xl bg-[#f8f9ff] dark:bg-zinc-800/50 border border-[#e5eeff] dark:border-zinc-800/30">
+                  <span className="block text-[10px] font-bold text-[#45464d] uppercase tracking-wider mb-1">
                     Email Account
                   </span>
-                  <span className="text-sm font-bold text-zinc-800 dark:text-zinc-200 break-all">
+                  <span className="text-sm font-bold text-[#0b1c30] dark:text-zinc-200 break-all">
                     {email}
                   </span>
                 </div>
                 
-                <div className="p-4 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/30 border border-zinc-200/40 dark:border-zinc-800/30">
-                  <span className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">
+                <div className="p-4 rounded-2xl bg-[#f8f9ff] dark:bg-zinc-800/50 border border-[#e5eeff] dark:border-zinc-800/30">
+                  <span className="block text-[10px] font-bold text-[#45464d] uppercase tracking-wider mb-1">
                     Verified Coordinates
                   </span>
                   {profile?.latitude && profile?.longitude ? (
@@ -224,29 +239,29 @@ export default function DashboardPage() {
                   )}
                 </div>
 
-                <div className="p-4 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/30 border border-zinc-200/40 dark:border-zinc-800/30">
-                  <span className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1">
+                <div className="p-4 rounded-2xl bg-[#f8f9ff] dark:bg-zinc-800/50 border border-[#e5eeff] dark:border-zinc-800/30">
+                  <span className="block text-[10px] font-bold text-[#45464d] uppercase tracking-wider mb-1">
                     Primary Address
                   </span>
-                  <span className="text-sm font-bold text-zinc-800 dark:text-zinc-200 truncate block">
+                  <span className="text-sm font-bold text-[#0b1c30] dark:text-zinc-200 truncate block">
                     {profile?.address || 'No location configured'}
                   </span>
                 </div>
               </div>
 
               {profile?.address && (
-                <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 flex items-center justify-between">
+                <div className="p-4 rounded-2xl bg-[#eff4ff] dark:bg-[#854eff]/10 border border-[#e5eeff] dark:border-zinc-800/30 flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
-                    <span className="text-[10px] font-bold text-indigo-650 dark:text-indigo-400 uppercase tracking-wider">
+                    <span className="text-[10px] font-bold text-[#6c2ce6] dark:text-indigo-400 uppercase tracking-wider">
                       📍 Verified Address
                     </span>
-                    <p className="text-xs text-zinc-700 dark:text-zinc-300">
+                    <p className="text-xs text-[#0b1c30] dark:text-zinc-300">
                       {profile.address}
                     </p>
                   </div>
                   <Link
                     href="/profile"
-                    className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline shrink-0"
+                    className="text-xs font-bold text-[#6c2ce6] dark:text-indigo-400 hover:text-[#5500cb] hover:underline shrink-0"
                   >
                     View Map →
                   </Link>
@@ -256,23 +271,23 @@ export default function DashboardPage() {
 
             {/* Quick Actions Grid */}
             <div className="space-y-4">
-              <h3 className="font-heading text-lg font-bold text-zinc-900 dark:text-zinc-50">
+              <h3 className="font-heading text-lg font-bold text-[#0b1c30] dark:text-zinc-50">
                 Quick Actions
               </h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link
                   href="/profile"
-                  className="flex items-center gap-4 p-5 bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/30 backdrop-blur-md rounded-2xl shadow-sm hover:scale-[1.01] hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group"
+                  className="flex items-center gap-4 p-5 bg-white dark:bg-zinc-900 border border-[#e5eeff] dark:border-zinc-800/30 rounded-2xl shadow-sm hover:shadow-md hover:border-[#c6c6cd]/50 hover:-translate-y-0.5 transition-all duration-200 group"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
-                    🗺️
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#eff4ff] dark:bg-[#854eff]/10 text-[#6c2ce6] dark:text-indigo-400 group-hover:scale-110 transition-transform shrink-0">
+                    <Map className="w-5 h-5" />
                   </div>
                   <div className="text-left">
-                    <h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-250">
+                    <h4 className="text-sm font-bold text-[#0b1c30] dark:text-zinc-250">
                       Update Address & Map
                     </h4>
-                    <p className="text-xs text-zinc-500 mt-0.5">
+                    <p className="text-xs text-[#45464d] dark:text-zinc-400 mt-0.5">
                       Configure geocoding parameters and coordinates canvas.
                     </p>
                   </div>
@@ -280,16 +295,16 @@ export default function DashboardPage() {
 
                 <Link
                   href="/pricing"
-                  className="flex items-center gap-4 p-5 bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/30 backdrop-blur-md rounded-2xl shadow-sm hover:scale-[1.01] hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group"
+                  className="flex items-center gap-4 p-5 bg-white dark:bg-zinc-900 border border-[#e5eeff] dark:border-zinc-800/30 rounded-2xl shadow-sm hover:shadow-md hover:border-[#c6c6cd]/50 hover:-translate-y-0.5 transition-all duration-200 group"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-950/50 text-violet-650 dark:text-violet-400 group-hover:scale-110 transition-transform">
-                    💎
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#eff4ff] dark:bg-[#854eff]/10 text-[#6c2ce6] dark:text-indigo-400 group-hover:scale-110 transition-transform shrink-0">
+                    <Sparkles className="w-5 h-5" />
                   </div>
                   <div className="text-left">
-                    <h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-250">
+                    <h4 className="text-sm font-bold text-[#0b1c30] dark:text-zinc-250">
                       Pricing & Upgrade
                     </h4>
-                    <p className="text-xs text-zinc-500 mt-0.5">
+                    <p className="text-xs text-[#45464d] dark:text-zinc-400 mt-0.5">
                       View subscription tiers and upgrade billing parameters.
                     </p>
                   </div>
@@ -298,20 +313,20 @@ export default function DashboardPage() {
                 <button
                   onClick={handleDownloadProfile}
                   disabled={downloadingPdf || !profile}
-                  className="flex items-center gap-4 p-5 bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/30 backdrop-blur-md rounded-2xl shadow-sm hover:scale-[1.01] hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group w-full text-left disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                  className="flex items-center gap-4 p-5 bg-white dark:bg-zinc-900 border border-[#e5eeff] dark:border-zinc-800/30 rounded-2xl shadow-sm hover:shadow-md hover:border-[#c6c6cd]/50 hover:-translate-y-0.5 transition-all duration-200 group w-full text-left disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-450 group-hover:scale-110 transition-transform">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#eff4ff] dark:bg-[#854eff]/10 text-[#6c2ce6] dark:text-indigo-450 group-hover:scale-110 transition-transform shrink-0">
                     {downloadingPdf ? (
-                      <div className="h-4 w-4 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+                      <div className="h-4 w-4 border-2 border-[#6c2ce6] border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      '📄'
+                      <FileText className="w-5 h-5" />
                     )}
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-250">
+                    <h4 className="text-sm font-bold text-[#0b1c30] dark:text-zinc-250">
                       {downloadingPdf ? 'Exporting PDF...' : 'Download Data Report'}
                     </h4>
-                    <p className="text-xs text-zinc-500 mt-0.5">
+                    <p className="text-xs text-[#45464d] dark:text-zinc-400 mt-0.5">
                       Export all coordinates and account specifications to PDF.
                     </p>
                   </div>
@@ -319,16 +334,16 @@ export default function DashboardPage() {
 
                 <Link
                   href="/"
-                  className="flex items-center gap-4 p-5 bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/30 backdrop-blur-md rounded-2xl shadow-sm hover:scale-[1.01] hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 transition-all group"
+                  className="flex items-center gap-4 p-5 bg-white dark:bg-zinc-900 border border-[#e5eeff] dark:border-zinc-800/30 rounded-2xl shadow-sm hover:shadow-md hover:border-[#c6c6cd]/50 hover:-translate-y-0.5 transition-all duration-200 group"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-450 group-hover:scale-110 transition-transform">
-                    🛍️
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#eff4ff] dark:bg-[#854eff]/10 text-[#6c2ce6] dark:text-indigo-400 group-hover:scale-110 transition-transform shrink-0">
+                    <ShoppingBag className="w-5 h-5" />
                   </div>
                   <div className="text-left">
-                    <h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-250">
+                    <h4 className="text-sm font-bold text-[#0b1c30] dark:text-zinc-250">
                       Explore Shop
                     </h4>
-                    <p className="text-xs text-zinc-500 mt-0.5">
+                    <p className="text-xs text-[#45464d] dark:text-zinc-400 mt-0.5">
                       Back to homepage product collection & listings.
                     </p>
                   </div>
@@ -342,56 +357,58 @@ export default function DashboardPage() {
           <div className="lg:col-span-1 space-y-6">
             
             {/* Membership Details Card */}
-            <div className="bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/30 backdrop-blur-md rounded-3xl p-6 shadow-lg flex flex-col justify-between h-full min-h-[420px]">
+            <div className="bg-white dark:bg-zinc-900 border border-[#e5eeff] dark:border-zinc-800/30 rounded-3xl p-6 shadow-sm flex flex-col justify-between h-full min-h-[420px]">
               <div className="space-y-6">
-                <h3 className="font-heading text-lg font-bold text-zinc-900 dark:text-zinc-50 border-b border-zinc-150 dark:border-zinc-850 pb-3 flex items-center gap-2">
-                  <span>💳</span> Billing Status
+                <h3 className="font-heading text-lg font-bold text-[#0b1c30] dark:text-zinc-50 border-b border-[#e5eeff] dark:border-zinc-800 pb-3 flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-[#6c2ce6]" />
+                  Billing Status
                 </h3>
 
                 {activeSub ? (
                   <div className="space-y-6">
                     {/* Active Subscription Details */}
-                    <div className="text-center p-6 bg-gradient-to-br from-indigo-500/10 to-violet-650/10 border border-indigo-200/30 dark:border-indigo-900/30 rounded-2xl relative overflow-hidden">
-                      <div className="absolute top-0 right-0 bg-indigo-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-bl-lg uppercase tracking-wider">
+                    <div className="text-center p-6 bg-gradient-to-br from-[#6c2ce6]/10 to-[#854eff]/10 border border-[#6c2ce6]/20 dark:border-[#854eff]/20 rounded-2xl relative overflow-hidden">
+                      <div className="absolute top-0 right-0 bg-[#6c2ce6] text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider shadow-sm">
                         Active
                       </div>
-                      <h4 className="text-xs font-semibold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider">
+                      <h4 className="text-xs font-bold text-[#6c2ce6] dark:text-indigo-400 uppercase tracking-wider">
                         Current Plan
                       </h4>
-                      <h2 className="font-heading text-3xl font-extrabold bg-gradient-to-r from-indigo-650 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent mt-1">
+                      <h2 className="font-heading text-3xl font-extrabold bg-gradient-to-r from-[#6c2ce6] to-[#854eff] dark:from-[#d0bcff] dark:to-violet-400 bg-clip-text text-transparent mt-1.5">
                         {activeSub.plan.name} Tier
                       </h2>
-                      <p className="text-[10px] text-zinc-500 mt-1 uppercase font-semibold">
-                        ⏱️ {activeSub.plan.durationHours} Hours Total Duration
+                      <p className="text-[10px] text-[#45464d] dark:text-zinc-400 mt-1 uppercase font-semibold flex items-center justify-center gap-1">
+                        <Clock className="w-3.5 h-3.5 text-[#6c2ce6]" />
+                        {activeSub.plan.durationHours} Hours Duration
                       </p>
                     </div>
 
                     <div className="space-y-3.5 text-sm">
-                      <div className="flex justify-between border-b border-zinc-150 dark:border-zinc-850 pb-2">
-                        <span className="text-zinc-500 font-medium">Activated At</span>
-                        <span className="text-zinc-800 dark:text-zinc-200 font-semibold">
+                      <div className="flex justify-between border-b border-[#e5eeff] dark:border-zinc-800 pb-2">
+                        <span className="text-[#45464d] dark:text-zinc-400 font-medium">Activated At</span>
+                        <span className="text-[#0b1c30] dark:text-zinc-200 font-semibold">
                           {new Date(activeSub.activatedAt).toLocaleDateString()}
                         </span>
                       </div>
 
-                      <div className="flex justify-between border-b border-zinc-150 dark:border-zinc-850 pb-2">
-                        <span className="text-zinc-500 font-medium">Expires At</span>
-                        <span className="text-zinc-800 dark:text-zinc-200 font-semibold">
+                      <div className="flex justify-between border-b border-[#e5eeff] dark:border-zinc-800 pb-2">
+                        <span className="text-[#45464d] dark:text-zinc-400 font-medium">Expires At</span>
+                        <span className="text-[#0b1c30] dark:text-zinc-200 font-semibold">
                           {new Date(activeSub.expiresAt).toLocaleDateString()}
                         </span>
                       </div>
 
-                      <div className="flex justify-between border-b border-zinc-150 dark:border-zinc-850 pb-2">
-                        <span className="text-zinc-500 font-medium">Time Left</span>
-                        <span className="text-indigo-650 dark:text-indigo-400 font-bold">
+                      <div className="flex justify-between border-b border-[#e5eeff] dark:border-zinc-800 pb-2">
+                        <span className="text-[#45464d] dark:text-zinc-400 font-medium">Time Left</span>
+                        <span className="text-[#6c2ce6] dark:text-[#d0bcff] font-bold">
                           {getSubscriptionTimeRemaining(activeSub.expiresAt)}
                         </span>
                       </div>
 
                       {activeSub.stripePaymentId && (
                         <div className="flex justify-between pb-2">
-                          <span className="text-zinc-500 font-medium">Payment ID</span>
-                          <span className="text-zinc-500 dark:text-zinc-450 font-mono text-[10px] truncate max-w-[130px]">
+                          <span className="text-[#45464d] dark:text-zinc-400 font-medium">Payment ID</span>
+                          <span className="text-[#45464d] dark:text-zinc-500 font-mono text-[10px] truncate max-w-[130px]" title={activeSub.stripePaymentId}>
                             {activeSub.stripePaymentId}
                           </span>
                         </div>
@@ -400,14 +417,14 @@ export default function DashboardPage() {
                   </div>
                 ) : (
                   <div className="space-y-6 text-center py-6">
-                    <div className="mx-auto w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 text-3xl">
-                      ⚠️
+                    <div className="mx-auto w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500">
+                      <AlertTriangle className="w-8 h-8" />
                     </div>
                     <div className="space-y-2">
-                      <h4 className="font-heading font-bold text-lg text-zinc-900 dark:text-zinc-100">
+                      <h4 className="font-heading font-bold text-lg text-[#0b1c30] dark:text-zinc-100">
                         No Active Tier
                       </h4>
-                      <p className="text-xs text-zinc-500 leading-relaxed max-w-xs mx-auto">
+                      <p className="text-xs text-[#45464d] dark:text-zinc-400 leading-relaxed max-w-xs mx-auto">
                         Upgrade your account to a premium membership to unlock free shipping, priority assistance, and coordinate PDF downloads.
                       </p>
                     </div>
@@ -418,9 +435,10 @@ export default function DashboardPage() {
               <div className="pt-6">
                 <Link
                   href="/pricing"
-                  className="w-full py-3.5 bg-gradient-to-r from-indigo-500 to-violet-650 hover:from-indigo-600 hover:to-violet-750 text-white text-sm font-semibold rounded-2xl shadow-md flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] transition-all"
+                  className="w-full py-3.5 bg-[#6c2ce6] hover:bg-[#6c2ce6]/90 text-white text-sm font-semibold rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
                 >
-                  {activeSub ? 'Change Subscription Plan' : 'Get Premium Membership'}
+                  <Sparkles className="w-4 h-4" />
+                  {activeSub ? 'Change Plan' : 'Get Premium'}
                 </Link>
               </div>
             </div>
@@ -433,3 +451,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

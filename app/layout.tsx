@@ -4,6 +4,7 @@ import './globals.css';
 import { Providers } from './providers';
 import Navbar from './components/Navbar';
 import '@/app/api/cron/init/route';
+import SearchBar from './components/SearchBar';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -33,7 +34,9 @@ export default function RootLayout({
         <Providers>
           <div className="flex flex-col min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 bg-grid-pattern">
             <Navbar />
+            <SearchBar />
             <div className="flex-1 flex flex-col">
+              
               {children}
             </div>
           </div>
