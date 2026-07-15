@@ -185,7 +185,7 @@ export default function ProfilePage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center gap-4">
+      <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center gap-4 bg-[#f8f9ff] dark:bg-zinc-950">
         <div className="h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
         <span className="text-sm text-zinc-650 dark:text-zinc-400 font-medium">Loading profile details...</span>
       </div>
@@ -197,10 +197,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] p-4 sm:p-8 lg:p-12 overflow-hidden">
+    <div className="relative min-h-[calc(100vh-4rem)] p-4 sm:p-8 lg:p-12 overflow-hidden bg-[#f8f9ff] dark:bg-zinc-950">
       {/* Ambient background decoration */}
-      <div className="absolute top-10 left-10 w-80 h-80 rounded-full bg-indigo-500/5 blur-3xl animate-float" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-violet-500/5 blur-3xl animate-float-delayed" />
+      <div className="absolute top-10 left-10 w-80 h-80 rounded-full bg-zinc-500/5 blur-3xl animate-float" />
+      <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-zinc-500/5 blur-3xl animate-float-delayed" />
 
       <div className="relative z-10 max-w-6xl mx-auto space-y-8">
         {/* Header card wrapper */}
