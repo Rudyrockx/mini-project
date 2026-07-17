@@ -19,7 +19,7 @@ export default function Navbar() {
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2 group">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white-500 shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">
-                <svg fill="currentColor" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg fill="white" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="16.5" cy="18.5" r="1.5"/>
                     <circle cx="9.5" cy="18.5" r="1.5"/>
                     <path d="M18 16H8a1 1 0 0 1-.958-.713L4.256 6H3a1 1 0 0 1 0-2h2a1 1 0 0 1 .958.713L6.344 6H21a1 1 0 0 1 .937 1.352l-3 8A1 1 0 0 1 18 16zm-9.256-2h8.563l2.25-6H6.944z"/>
@@ -209,8 +209,21 @@ export default function Navbar() {
               >
                 Profile
               </Link>
+
+              
             </>
           )}
+          <Link
+                href="/products"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block px-3 py-2 rounded-lg text-base font-medium ${
+                  isActive('/products')
+                    ? 'bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                }`}
+              >
+                Products
+              </Link>
           <Link
             href="/pricing"
             onClick={() => setMobileMenuOpen(false)}

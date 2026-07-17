@@ -12,6 +12,20 @@ export async function GET(request: NextRequest) {
     const pageSize = 12; // Products per page
 
     const where: any = {};
+    
+
+    if (category) where.category = category;
+    if (minPrice || maxPrice) {
+      where.price = {};
+      if (minPrice) where.price.gte = parseFloat(minPrice);
+      if (maxPrice) where.price.lte = parseFloat(maxPrice);
+    }
+    if (minRating) where.rating = { gte: parseFloat(minRating) };
+
+    // Get total count
+    const total = await prisma.product.count({ where });
+
+    // product search
     const search = searchParams.get('search');
     if(search){
       where.OR = [
@@ -30,16 +44,6 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    if (category) where.category = category;
-    if (minPrice || maxPrice) {
-      where.price = {};
-      if (minPrice) where.price.gte = parseFloat(minPrice);
-      if (maxPrice) where.price.lte = parseFloat(maxPrice);
-    }
-    if (minRating) where.rating = { gte: parseFloat(minRating) };
-
-    // Get total count
-    const total = await prisma.product.count({ where });
 
     // Get products for current page
     const products = await prisma.product.findMany({
@@ -51,9 +55,17 @@ export async function GET(request: NextRequest) {
 
     const totalPages = Math.ceil(total / pageSize);
 
+    // Get all unique categories from database for the filters
+    const allCategories = await prisma.product.findMany({
+      select: { category: true },
+      distinct: ['category'],
+    });
+    const categories = allCategories.map(c => c.category);
+
     return NextResponse.json({
       success: true,
       products,
+      categories,
       pagination: {
         total,
         pageSize,

@@ -309,10 +309,7 @@ export default function Home() {
     }
   };
 
-  const triggerPdfExport = () => {
-    setIsPdfExporting(true);
-    setTimeout(() => setIsPdfExporting(false), 2000);
-  };
+ 
 
   return (
     <div id="luxe-app" className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex flex-col selection:bg-[#6c2ce6]/20 relative overflow-x-hidden antialiased">
@@ -779,27 +776,37 @@ export default function Home() {
               </div>
 
               {/* Action area */}
-              <div className="border-t border-[#e5eeff] dark:border-zinc-800 pt-6 flex flex-col sm:flex-row gap-4">
-                <button 
-                  onClick={() => {
-                    addToCart(selectedProduct, 1);
-                    setSelectedProduct(null);
-                  }}
-                  className="flex-1 bg-[#6c2ce6] hover:bg-[#6c2ce6]/95 text-white py-4 rounded-xl font-bold text-sm tracking-wide transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                  Add to Cart
-                </button>
-                <button 
-                  onClick={() => {
-                    toggleFavorite(selectedProduct.id, selectedProduct.name);
-                  }}
-                  className="px-4 py-4 rounded-xl border border-[#c6c6cd] text-[#45464d] hover:text-rose-500 hover:bg-rose-50 transition-colors flex items-center justify-center cursor-pointer"
-                  title="Add to Wishlist"
-                >
-                  <Heart className="w-5 h-5" fill={favorites.includes(selectedProduct.id) ? "currentColor" : "none"} />
-                </button>
-              </div>
+                <div className="border-t border-[#e5eeff] dark:border-zinc-800 pt-6 flex flex-col sm:flex-row gap-4">
+                  {/* Add to Cart - Direct */}
+                  <button 
+                    onClick={() => {
+                      addToCart(selectedProduct, 1);
+                      setSelectedProduct(null);
+                    }}
+                    className="flex-1 bg-[#6c2ce6] hover:bg-[#6c2ce6]/95 text-white py-4 rounded-xl font-bold text-sm tracking-wide transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Add to Cart
+                  </button>
+
+                  {/* View Details - Link to Product Page */}
+                  <Link
+                    href={`/products/${selectedProduct.id}`}
+                    className="flex-1 border border-[#c6c6cd] text-[#6c2ce6] hover:bg-[#c6c6cd]/10 py-4 rounded-xl font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <Eye className="w-4 h-4" />
+                    View Details
+                  </Link>
+
+                  {/* Wishlist */}
+                  <button 
+                    onClick={() => toggleFavorite(selectedProduct.id, selectedProduct.name)}
+                    className="px-4 py-4 rounded-xl border border-[#c6c6cd] text-[#45464d] hover:text-rose-500 hover:bg-rose-50 transition-colors flex items-center justify-center cursor-pointer"
+                    title="Add to Wishlist"
+                  >
+                    <Heart className="w-5 h-5" fill={favorites.includes(selectedProduct.id) ? "currentColor" : "none"} />
+                  </button>
+                </div>
 
             </div>
           </div>

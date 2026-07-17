@@ -26,6 +26,7 @@ model User {
   subscriptions         UserSubscription[]
   sessions              Session[]
   cart                  Cart?   
+  wishlist              Wishlist?
 }
 
 model Session {
@@ -134,3 +135,20 @@ model OrderItem {
   price     Float    // Price at time of purchase
   createdAt DateTime @default(now())
 }
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     WishlistItem[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  wishlistId String
+  wishlist  Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  productId String
+  addeddAt DateTime @default(now())
+  }
