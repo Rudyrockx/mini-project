@@ -16,6 +16,18 @@ interface CartItem {
     image: string;
   };
 }
+interface WishlistItem {
+  id: string;
+  productId: string;
+  addedAt: string;
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    image: string;
+    description: string;
+  };
+}
 
 export default function CartPage() {
   const { data: session } = useSession();
@@ -23,6 +35,7 @@ export default function CartPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
 
   useEffect(() => {
     if (!session) {
@@ -31,6 +44,9 @@ export default function CartPage() {
     }
     fetchCart();
   }, [session]);
+
+
+
 
   const fetchCart = async () => {
   try {
@@ -74,6 +90,55 @@ export default function CartPage() {
     }
   };
 
+
+  const fetchWishlist = async () => {
+  try {
+    const res = await fetch('/api/wishlist', { credentials: 'include' });
+    const data = await res.json();
+    setWishlistItems(data.items || []);
+  } catch (error) {
+    console.error('Error fetching wishlist:', error);
+  }
+};
+
+const removeFromWishlist = async (itemId: string) => {
+  try {
+    const res = await fetch('/api/wishlist/remove', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ itemId }),
+    });
+
+    if (res.ok) {
+      fetchWishlist();
+    }
+  } catch (error) {
+    console.error('Error removing from wishlist:', error);
+  }
+};
+
+const moveToCart = async (product: any) => {
+  try {
+    await fetch('/api/cart/add', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: product.id,
+        quantity: 1,
+      }),
+    });
+    alert('Added to cart!');
+    fetchCart();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+  };
+
+
+
+
   if (loading) {
     return <div className="p-8 text-center">Loading cart...</div>;
   }
@@ -91,6 +156,10 @@ export default function CartPage() {
       </div>
     );
   }
+
+  
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -190,8 +259,71 @@ export default function CartPage() {
               Continue Shopping
             </Link>
           </div>
+                    {/* WISHLIST SECTION */}
+          <div className="mt-12">
+            <h2 className="text-3xl font-bold text-black mb-2">My Wish List</h2>
+            <p className="text-gray-600 mb-8">
+              You have {wishlistItems.length} {wishlistItems.length === 1 ? 'item' : 'items'} saved for later.
+            </p>
+
+            {wishlistItems.length === 0 ? (
+              <div className="bg-white rounded-lg shadow-md p-12 text-center">
+                <p className="text-gray-600 mb-4">Your wishlist is empty</p>
+                <Link href="/products" className="text-blue-600 hover:underline">
+                  Continue Shopping
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {wishlistItems.map((item) => (
+                  <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                    {/* Image */}
+                    <div className="h-48 bg-gray-200 relative overflow-hidden">
+                      {item.product?.image ? (
+                        <img
+                          src={item.product.image}
+                          alt={item.product?.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-4">
+                      <h3 className="text-lg font-bold text-black mb-2">{item.product?.name}</h3>
+                      <p className="text-2xl font-bold text-purple-600 mb-2">
+                        ${item.product?.price}
+                      </p>
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                        {item.product?.description}
+                      </p>
+
+                      {/* Buttons */}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => moveToCart(item.product)}
+                          className="flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 font-bold text-sm"
+                        >
+                          Add to Cart
+                        </button>
+                        <button
+                          onClick={() => removeFromWishlist(item.id)}
+                          className="px-3 py-2 border border-gray-300 text-gray-600 rounded-lg hover:text-red-600 hover:border-red-600"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
