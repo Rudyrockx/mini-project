@@ -1,20 +1,9 @@
 'use client';
 
+import {useSession } from 'next-auth/react';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
-import { 
-  ShoppingBag, 
-  Heart, 
-  ShoppingCart, 
-  Eye, 
-  Star, 
-  ChevronRight, 
-  Truck, 
-  Headphones, 
-  ShieldCheck, 
-  ArrowRight,
-  X
-} from 'lucide-react';
+import { ShoppingCart, Heart, ChevronRight, Eye, Star, Truck, Headphones, ShieldCheck, ArrowRight, X, Search, Sparkles, ShoppingBag} from 'lucide-react';
 
 interface Product {
   id: number;
@@ -38,187 +27,140 @@ interface Toast {
   type?: 'success' | 'info' | 'warning';
 }
 
-const PRODUCTS: Product[] = [
-  {
-    id: 1,
-    name: "Stealth Chrono X1",
-    category: "Timepieces",
-    categorySlug: "timepieces",
-    price: 295.00,
-    rating: 4.0,
-    reviewsCount: 42,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBwU2NbB9giOG35wiDY-1mYr2gV_0mgKPqHJZnfiTg8akSrTRNtrs2tBjqR_aD_XqFTGB_ObnDL7VJoo9FTa-XF5R9ndSvTSg1MWkG1ICkLJ7eI350d9Io40n8cSPJiI1bEtdaiYtCEFWFijprEtK3Ao4eUgcEKu25ij0PJdAKwY8M-Ay2K7xUKJVjv7UOGnsfvLrO15be2L-qUN0xfeVU4zU5c6ztHiQJeW0Rme85MMotCoI_GOtov09mx23OBCrFT5yxW79JI41HE",
-    badge: "New Arrival",
-    isNewArrival: true,
-    description: "Designed for the ultimate modern professional. The Stealth Chrono X1 combines aerospace-grade black stainless steel, a scratch-resistant sapphire crystal glass face, and a highly precise Japanese quartz movement. Water-resistant up to 50 meters, it features dual-subdials and a sleek monochrome watch face that fits seamlessly under a tailored suit cuff or alongside casual weekend apparel.",
-    specs: {
-      "Case Material": "316L Black Stainless Steel",
-      "Movement": "Japanese Quartz Chronograph",
-      "Water Resistance": "5 ATM (50 meters)",
-      "Dial Diameter": "41 mm",
-      "Band Width": "20 mm"
-    }
-  },
-  {
-    id: 2,
-    name: "Heritage Messenger",
-    category: "Leather Goods",
-    categorySlug: "leather-goods",
-    price: 450.00,
-    rating: 5.0,
-    reviewsCount: 128,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDcio1zq7rNqmOwe8lv3TZMXa49IpoTVY8W9noIyuTULfR1elw7Dp01LPX5NF2D19kKfzpay4bJGYfA_8yxMqDXFneujHMSNI2ksI2YxuLIMW7hQeZj_GF3AjWX7jYr-P3RPu-EOMhAZXQCLy83YHpC47qrt3E2wWr-FutW56RNB-K1b4YwPJ0Dl6Wahv_2C4qgBwm_Pdsi5kitrWLGpXbAGcNrawvmdvlHyASaGjj-5wYJ29EH-bkcNfW5ielJinFIEt-trgF1JF_v",
-    isBestSeller: true,
-    description: "Meticulously handcrafted from premium, full-grain mahogany calfskin leather. The Heritage Messenger bag gets richer with age, developing a beautiful unique patina. Features custom matte brass hardware, dual quick-release magnetic strap closures under the buckles, a padded laptop compartment for up to 15\" devices, and an adjustable shoulder strap reinforced with heavy-duty webbing.",
-    specs: {
-      "Material": "Full-grain Mahogany Leather",
-      "Hardware": "Solid Matte Brass",
-      "Dimensions": "15.5\" x 11.5\" x 4.2\"",
-      "Laptop Pocket": "Fits up to 15\" MacBook Pro",
-      "Origin": "Handmade in Florence, Italy"
-    }
-  },
-  {
-    id: 3,
-    name: "PureSound ANC Pro",
-    category: "Audio",
-    categorySlug: "audio",
-    price: 320.00,
-    rating: 4.5,
-    reviewsCount: 94,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDbWHvWRmrv3mogSsJ4DYPL_aIRoJFImB-ysIeJpygWNKpLqi_xhBGXnUFBNIss1DcwZrhL2M7znnv8TOQ8ufkNCA-IHuaVETyMMTHmDPlW3Dz8xYJTc8knjH9gcQleNhPy96oOJXy_dq5nHwbEjkszgd1JBIsSHsOaqa2laCn582e-L9IRGBjdQ_ellER4grIp4kddqyJlPztqKUlRol0XlDy2LBTmyEufN_2LATa0Jzmy4BaPDqZ2aCbVprzHuL8xe1DZT5lgUk4O",
-    badge: "Best Seller",
-    isBestSeller: true,
-    description: "Immerse yourself in pure acoustic excellence. Featuring hybrid active noise cancellation that cancels up to 40dB of ambient noise, custom-tuned 40mm dynamic drivers, and an ultra-soft memory foam ear cup design wrapped in breathable protein leather. Offers up to 45 hours of continuous wireless playback on a single charge and ultra-fast USB-C charging.",
-    specs: {
-      "Driver Size": "40mm Custom Dynamic",
-      "Active Noise Cancellation": "Yes, Hybrid ANC (up to 40dB)",
-      "Battery Life": "Up to 45 Hours (ANC off)",
-      "Connectivity": "Bluetooth 5.2 & 3.5mm Aux",
-      "Charging": "USB-C, Fast Charge (10m = 5h)"
-    }
-  },
-  {
-    id: 4,
-    name: "Essential Silk Shirt",
-    category: "Apparel",
-    categorySlug: "apparel",
-    price: 185.00,
-    rating: 5.0,
-    reviewsCount: 56,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA-QVj9xsp_KU-3SC9g-wbRwPGZ2rZaHF8MK4Lbqsl_KY0aKnuT6n-qOL1inoWxcdnzZHrHXBuCR0EsU4r8JDwJA5U0yREvdjg7ijIE6hg7QwmGSk01PrzIbER8upuCSgCcEEGLipH1uqaNX18TwRGmHM4RpJxQ4g6LliSchC4VzQkzZWVWn9jh7pZ-PW6dhpbxeAamafsZOneMLfAVIo2etxHrAzNrvTggihDXeiE9eCWC427TGDGPQ1PEFOv9J-vPQvPR8_T_w9Oc",
-    isNewArrival: true,
-    description: "The absolute epitome of quiet luxury. Tailored from 100% natural, high-grade Mulberry silk, this shirt offers an unmatched, skin-friendly, breathable drape with a subtle, sophisticated satin sheen. Features a crisp semi-spread collar, single-needle stitching throughout, and natural mother-of-pearl buttons. Perfect for the transition from the boardroom to an upscale dinner.",
-    specs: {
-      "Material": "100% Mulberry Silk (19 momme)",
-      "Buttons": "Natural Mother-of-Pearl",
-      "Fit": "Modern Tailored Fit",
-      "Care": "Dry Clean Recommended",
-      "Color": "Ivory White"
-    }
-  },
-  {
-    id: 5,
-    name: "Equilibrium Desk Pad",
-    category: "Accessories",
-    categorySlug: "accessories",
-    price: 110.00,
-    rating: 4.8,
-    reviewsCount: 74,
-    image: "https://images.unsplash.com/photo-1616440347437-b1c73416efc2?auto=format&fit=crop&q=80&w=600",
-    badge: "Best Seller",
-    isBestSeller: true,
-    description: "Elevate your workspace organization and comfort. Crafted from premium dual-sided vegan leather and backed by sustainable natural cork, the Equilibrium Desk Pad provides a warm, tactile, waterproof workspace shield. Features integrated hidden cabling slots to keep your smart chargers organized and secure.",
-    specs: {
-      "Material": "Premium Vegan Leather & Natural Cork",
-      "Water Resistance": "Yes, spill-proof coating",
-      "Dimensions": "31.5\" x 15.7\" (80cm x 40cm)",
-      "Thickness": "2.5 mm",
-      "Colors": "Charcoal Black / Tan Brown"
-    }
-  },
-  {
-    id: 6,
-    name: "Vanguard Leather Journal",
-    category: "Leather Goods",
-    categorySlug: "leather-goods",
-    price: 85.00,
-    rating: 4.9,
-    reviewsCount: 31,
-    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600",
-    badge: "Limited Edition",
-    isNewArrival: true,
-    description: "A timeless heirloom-quality notebook designed for your thoughts, logs, and creative sketches. Bound in a single, thick piece of full-grain oil-tanned leather, it includes 240 pages of heavy, ink-friendly 120gsm acid-free cream paper. Features an elegant wraparound leather tie closure and hand-sewn lay-flat binding.",
-    specs: {
-      "Leather Type": "Full-Grain Oil-Tanned Cowhide",
-      "Paper": "120 GSM Acid-Free Cream Paper",
-      "Pages": "240 (counting both sides)",
-      "Closure": "Wraparound Leather Strap",
-      "Dimensions": "8.2\" x 5.8\" (A5 Size)"
-    }
-  },
-  {
-    id: 7,
-    name: "Aero Classic Aviators",
-    category: "Accessories",
-    categorySlug: "accessories",
-    price: 210.00,
-    rating: 4.7,
-    reviewsCount: 22,
-    image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=600",
-    description: "Ultra-premium classic aviation eyewear designed for structural longevity and optical clarity. Crafted with featherlight, high-tensile Japanese titanium frames and polarized, anti-reflective mineral glass lenses that filter 100% of UV rays. Embellished with comfortable medical-grade silicone nose pads and durable screwless temple hinges.",
-    specs: {
-      "Frame": "Japanese Pure Beta-Titanium",
-      "Lens": "Polarized Mineral Glass",
-      "UV Protection": "UV400 (100% UVA/UVB Protection)",
-      "Weight": "16 grams",
-      "Hinges": "Screwless Flex-Action"
-    }
-  },
-  {
-    id: 8,
-    name: "Verdant Scented Candle",
-    category: "Accessories",
-    categorySlug: "accessories",
-    price: 65.00,
-    rating: 4.9,
-    reviewsCount: 62,
-    image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&q=80&w=600",
-    badge: "New Arrival",
-    isNewArrival: true,
-    description: "An exceptional olfactory journey to cultivate absolute calm and deep focus. Hand-poured with sustainable natural soy wax and lead-free organic cotton wicks in a custom, heavy, hand-blown amber glass vessel. Features rich, woodsy bottom notes of fresh cedarwood, sandalwood, and amber, lightened by crisp top notes of organic bergamot.",
-    specs: {
-      "Wax Type": "100% Natural Soy Wax",
-      "Burn Time": "65+ Hours",
-      "Weight": "11 oz (310g)",
-      "Wick": "Lead-free Single Cotton Wick",
-      "Fragrance Notes": "Cedarwood, Bergamot, Sandalwood, Warm Amber"
-    }
-  }
-];
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'profile' | 'search' | 'map' | 'pdf'>('profile');
-  const [typedAddress, setTypedAddress] = useState('');
-  const [uploadState, setUploadState] = useState<'idle' | 'uploading' | 'done'>('idle');
-  const [isPdfExporting, setIsPdfExporting] = useState(false);
-  const [likedProducts, setLikedProducts] = useState<number[]>([]);
-  const [addedProduct, setAddedProduct] = useState<string | null>(null);
-
-  // States and refs for Stitch elements
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const { data: session } = useSession();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [products, setProducts] = useState<Product[]>([]);  
+  const [favorites, setFavorites] = useState<number[]>([]);
+  const [addedProduct, setAddedProduct] = useState<string | null>(null);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [trendFilter, setTrendFilter] = useState('All');
-  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const productsSectionRef = useRef<HTMLDivElement>(null);
   const collectionsSectionRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products', { cache: 'no-store' });
+      const data = await res.json();
+      
+      // Convert database products to match Product interface
+      const formattedProducts = data.products?.map((p: any) => ({
+        id: parseInt(p.id) || Math.random(),
+        name: p.name,
+        category: p.category,
+        categorySlug: p.category.toLowerCase().replace(/\s+/g, '-'),
+        price: p.price,
+        rating: p.rating || 0,
+        reviewsCount: p.reviews || 0,
+        image: p.image || '',
+        description: p.description || '',
+        specs: {
+          'Category': p.category,
+          'Price': `$${p.price}`,
+          'In Stock': p.inStock ? 'Yes' : 'No',
+        },
+        isBestSeller: false,
+        isNewArrival: false,
+      })) || [];
+      
+      setProducts(formattedProducts);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch wishlist on mount
+  useEffect(() => {
+    if (session) {
+      fetchWishlist();
+    }
+  }, [session]);
+
+const fetchWishlist = async () => {
+    try {
+      const res = await fetch('/api/wishlist', { credentials: 'include' });
+      const data = await res.json();
+      const ids = data.items?.map((item: any) => item.productId) || [];
+      setWishlistIds(ids);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  // add to cart /
+
+  const addToCart = async (productId: string) => {
+    if (!session) {
+      alert('Please login first');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/cart/add', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, quantity: 1 }),
+      });
+
+      if (res.ok) {
+        showToast('Added to cart!', 'success');
+        
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+// wishlist toggle  
+
+const toggleWishlist = async (productIdStr: string) => {
+  if (!session) {
+    showToast('Please login first', 'warning');
+    return;
+  }
+
+  const isInWishlist = wishlistIds.includes(productIdStr);
+
+  try {
+    if (isInWishlist) {
+      // Remove logic...
+    } else {
+      console.log('Adding to wishlist, productId:', productIdStr);  // ← ADD THIS
+      
+      const res = await fetch('/api/wishlist/add', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: productIdStr }),
+      });
+
+      const data = await res.json();
+      console.log('Wishlist add response:', data);  // ← ADD THIS
+    }
+    fetchWishlist();
+  } catch (error) {
+    console.error('Error toggling wishlist:', error);
+  }
+};
+
+// toast counter
+  const toastCounterRef = useRef(0);
   // Toast trigger utility
   const showToast = (message: string, type: 'success' | 'info' | 'warning' = 'success') => {
-    const id = Date.now();
+    const id = ++toastCounterRef.current;
     setToasts(prev => [...prev, { id, message, type }]);
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
@@ -230,86 +172,23 @@ export default function Home() {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Favorites handling
-  const toggleFavorite = (productId: number, productName: string) => {
-    setFavorites(prev => {
-      const exists = prev.includes(productId);
-      if (exists) {
-        showToast(`Removed ${productName} from your wishlist.`, 'info');
-        return prev.filter(id => id !== productId);
-      } else {
-        showToast(`Added ${productName} to your wishlist!`, 'success');
-        return [...prev, productId];
-      }
-    });
-  };
 
-  const toggleLike = (id: number) => {
-    setLikedProducts((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
 
-  const addToCart = (product: Product, quantity: number = 1) => {
-    setAddedProduct(product.name);
-    setTimeout(() => setAddedProduct(null), 2000);
-    showToast(`Added ${product.name} to your cart.`, 'success');
-  };
 
   // Filter products based on search and selected categories
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter(product => {
-      // Search query filter
-      const matchesSearch = searchQuery === '' || 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      // Category filter (Shop collections buttons & sidebar triggers)
-      const matchesCategory = categoryFilter === 'All' || 
-        product.categorySlug === categoryFilter.toLowerCase().replace(' ', '-');
+  return products.filter(product => {
+    const matchesCategory = categoryFilter === 'All' || product.categorySlug === categoryFilter.toLowerCase().replace(/\s+/g, '-');
+    const matchesTrend = 
+      trendFilter === 'All' || 
+      (trendFilter === 'New Arrivals' && product.isNewArrival) ||
+      (trendFilter === 'Best Sellers' && product.isBestSeller);
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesTrend && matchesSearch;
+  });
+}, [products, categoryFilter, trendFilter, searchQuery]);
 
-      // Trending filter tabs (All / New Arrivals / Best Sellers)
-      let matchesTrend = true;
-      if (trendFilter === 'New Arrivals') {
-        matchesTrend = !!product.isNewArrival;
-      } else if (trendFilter === 'Best Sellers') {
-        matchesTrend = !!product.isBestSeller;
-      }
-
-      return matchesSearch && matchesCategory && matchesTrend;
-    });
-  }, [searchQuery, categoryFilter, trendFilter]);
-
-
-  // Address Autocomplete simulation helper
-  useEffect(() => {
-    if (activeTab === 'search') {
-      setTypedAddress('');
-      let index = 0;
-      const fullText = '1600 Amphitheatre Pkwy, Mountain View...';
-      const interval = setInterval(() => {
-        if (index < fullText.length) {
-          setTypedAddress((prev) => prev + fullText.charAt(index));
-          index++;
-        } else {
-          clearInterval(interval);
-        }
-      }, 50);
-      return () => clearInterval(interval);
-    }
-  }, [activeTab]);
-
-  const triggerUpload = () => {
-    if (uploadState === 'idle') {
-      setUploadState('uploading');
-      setTimeout(() => setUploadState('done'), 1500);
-    } else {
-      setUploadState('idle');
-    }
-  };
-
- 
 
   return (
     <div id="luxe-app" className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex flex-col selection:bg-[#6c2ce6]/20 relative overflow-x-hidden antialiased">
@@ -334,8 +213,9 @@ export default function Home() {
         <div className="relative z-10 px-6 md:px-16 max-w-7xl mx-auto w-full">
           <div className="max-w-2xl text-white">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-6 animate-fade-in">
-              
-              <span className="text-xs font-semibold tracking-wider uppercase">Luxe Premium Lifestyle</span>
+              <Sparkles className="w-6 h-6 text-[#FFD700]" />
+              <span className="text-xs font-semibold tracking-wider uppercase text-[#FFD700]">
+                Luxury Premium Lifestyle</span>
             </div>
             
             <h1 className="font-bold text-4xl md:text-6xl mb-6 leading-tight tracking-tight drop-shadow-sm">
@@ -516,7 +396,7 @@ export default function Home() {
 
           {/* Sub-Category horizontal scroll bar */}
           <div className="flex items-center gap-2 overflow-x-auto pb-6 mb-8 scrollbar-hide">
-            {['All', 'Timepieces', 'Leather Goods', 'Audio', 'Apparel', 'Accessories'].map(cat => (
+            {['All', 'Home', 'Electronics', 'Audio', 'Apparel', 'Accessories'].map(cat => (
               <button 
                 key={cat}
                 onClick={() => {
@@ -535,25 +415,29 @@ export default function Home() {
           </div>
 
           {/* Product Grid */}
-          {filteredProducts.length === 0 ? (
-            <div className="bg-white rounded-2xl p-16 text-center shadow-sm max-w-lg mx-auto border border-[#e5eeff]">
-              <div className="w-16 h-16 bg-[#eff4ff] rounded-full flex items-center justify-center mx-auto mb-4 text-[#6c2ce6]">
-                <ShoppingBag className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold text-[#0b1c30]">No Products Found</h3>
-              <p className="text-[#45464d] text-sm mt-2">We couldn't find any premium essentials matching your current query or category filters.</p>
-              <button 
-                onClick={() => {
-                  setCategoryFilter('All');
-                  setTrendFilter('All');
-                  setSearchQuery('');
-                }}
-                className="mt-6 bg-[#6c2ce6] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#6c2ce6]/90 transition-all cursor-pointer"
-              >
-                Reset All Filters
-              </button>
-            </div>
-          ) : (
+            {loading ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-600">Loading products...</p>
+                </div>
+              ) : filteredProducts.length === 0 ? (
+                <div className="bg-white rounded-2xl p-16 text-center shadow-sm max-w-lg mx-auto border border-[#e5eeff]">
+                  <div className="w-16 h-16 bg-[#eff4ff] rounded-full flex items-center justify-center mx-auto mb-4 text-[#6c2ce6]">
+                    <ShoppingBag className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#0b1c30]">No Products Found</h3>
+                  <p className="text-[#45464d] text-sm mt-2">We couldn't find any premium essentials matching your current query or category filters.</p>
+                  <button 
+                    onClick={() => {
+                      setCategoryFilter('All');
+                      setTrendFilter('All');
+                      setSearchQuery('');
+                    }}
+                    className="mt-6 bg-[#6c2ce6] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#6c2ce6]/90 transition-all cursor-pointer"
+                  >
+                    Reset All Filters
+                  </button>
+                </div>
+              ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {filteredProducts.map(product => {
                 const isFavorite = favorites.includes(product.id);
@@ -581,21 +465,21 @@ export default function Home() {
 
                       {/* Wishlist Button */}
                       <button 
-                        onClick={() => toggleFavorite(product.id, product.name)}
+                        onClick={() => toggleWishlist(product.id.toString())}
                         className={`absolute top-4 right-4 z-10 p-2 rounded-full shadow-md backdrop-blur-md transition-all cursor-pointer ${
-                          isFavorite 
+                          wishlistIds.includes(product.id.toString())
                             ? 'bg-rose-50 text-rose-500 hover:bg-rose-100' 
                             : 'bg-white/80 text-[#45464d] hover:bg-white hover:text-[#6c2ce6]'
                         }`}
-                        title={isFavorite ? "Remove from Wishlist" : "Add to Wishlist"}
+                        title={wishlistIds.includes(product.id.toString()) ? "Remove from Wishlist" : "Add to Wishlist"}
                       >
-                        <Heart className="w-4.5 h-4.5" fill={isFavorite ? "currentColor" : "none"} />
+                        <Heart className="w-4.5 h-4.5" fill={wishlistIds.includes(product.id.toString()) ? "currentColor" : "none"} />
                       </button>
 
                       {/* Floating Add to Cart Button (revealed on hover) */}
                       <div className="absolute bottom-4 left-4 right-4 flex gap-2 translate-y-14 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-10">
                         <button 
-                          onClick={() => addToCart(product, 1)}
+                          onClick={() => addToCart(product.id.toString())}
                           className="flex-1 bg-[#6c2ce6] text-white py-3 px-4 rounded-xl font-semibold text-xs hover:bg-[#6c2ce6]/90 transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer transform active:scale-95"
                         >
                           <ShoppingCart className="w-3.5 h-3.5" />
@@ -780,7 +664,7 @@ export default function Home() {
                   {/* Add to Cart - Direct */}
                   <button 
                     onClick={() => {
-                      addToCart(selectedProduct, 1);
+                      addToCart(selectedProduct.id.toString());
                       setSelectedProduct(null);
                     }}
                     className="flex-1 bg-[#6c2ce6] hover:bg-[#6c2ce6]/95 text-white py-4 rounded-xl font-bold text-sm tracking-wide transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 cursor-pointer"
@@ -800,7 +684,7 @@ export default function Home() {
 
                   {/* Wishlist */}
                   <button 
-                    onClick={() => toggleFavorite(selectedProduct.id, selectedProduct.name)}
+                    onClick={() => toggleWishlist(selectedProduct.id.toString())}
                     className="px-4 py-4 rounded-xl border border-[#c6c6cd] text-[#45464d] hover:text-rose-500 hover:bg-rose-50 transition-colors flex items-center justify-center cursor-pointer"
                     title="Add to Wishlist"
                   >

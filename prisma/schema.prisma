@@ -150,5 +150,5 @@ model WishlistItem {
   wishlistId String
   wishlist  Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
   productId String
-  addedAt   DateTime @default(now())
+  
 }

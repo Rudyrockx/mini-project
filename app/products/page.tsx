@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import {Heart} from 'lucide-react';
+import {useRouter} from 'next/navigation';
+import { Router } from 'next/router';
 
 interface Product {
   id: string;
@@ -26,8 +29,9 @@ export default function ProductsPage() {
   const [page, setPage] = useState(1);
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('search') || '');
-
+  const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+  const router = useRouter();
   const [pagination, setPagination] = useState({
     total: 0,
     pageSize: 12,
@@ -38,6 +42,55 @@ export default function ProductsPage() {
   useEffect(() => {
     fetchProducts();
   }, [selectedCategory, minPrice, maxPrice, minRating, page, search]);
+
+  useEffect(() =>{
+    fetchWishlist();
+  }, []);
+  
+  const fetchWishlist = async () => {
+  try {
+    const res = await fetch('/api/wishlist', { credentials: 'include' });
+    const data = await res.json();
+    const ids = data.items?.map((item: any) => item.productId) || [];
+    setWishlistIds(ids);
+  } catch (error) {
+    console.error('Error fetching wishlist:', error);
+  }
+};
+
+
+const toggleWishlist = async (productId: string) => {
+  const isInWishlist = wishlistIds.includes(productId);
+  
+  try {
+    if (isInWishlist) {
+      // Remove from wishlist
+      const item = await fetch('/api/wishlist')
+        .then(r => r.json())
+        .then(d => d.items?.find((i: any) => i.productId === productId));
+      
+      if (item) {
+        await fetch('/api/wishlist/remove', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ itemId: item.id }),
+        });
+      }
+    } else {
+      // Add to wishlist
+      await fetch('/api/wishlist/add', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId }),
+      });
+    }
+    fetchWishlist();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -205,14 +258,21 @@ export default function ProductsPage() {
           {/* Products Grid */}
           {products.length === 0 ? (
             <div className="text-center text-gray-600 py-12">No products available</div>
+            
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
                 {products.map((product) => (
-                  <Link key={product.id} href={`/products/${product.id}`} className="group">
+                  
+                  <div 
+                      onClick={() => router.push(`/products/${product.id}`)}
+                      className="group"
+                    >
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer h-full flex flex-col overflow-hidden">
                       
                       {/* Product Image Container */}
+                    
                       <div className="bg-gray-100 h-64 flex items-center justify-center overflow-hidden relative">
                         {product.image ? (
                           <img
@@ -223,6 +283,16 @@ export default function ProductsPage() {
                         ) : (
                           <div className="text-gray-400">No Image</div>
                         )}
+                        <button
+                          onClick={() => toggleWishlist(product.id)}
+                          className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-red-50 transition"
+                        >
+                          <Heart
+                            className="w-5 h-5"
+                            fill={wishlistIds.includes(product.id) ? "currentColor" : "none"}
+                            color={wishlistIds.includes(product.id) ? "red" : "gray"}
+                          />
+                        </button>
                         
                         {/* Product Badges */}
                         {product.price > 1000 ? (
@@ -234,6 +304,8 @@ export default function ProductsPage() {
                             New
                           </span>
                         ) : null}
+
+                        
                       </div>
 
                       {/* Product Content */}
@@ -271,17 +343,23 @@ export default function ProductsPage() {
                         <div className="flex justify-between items-center mt-5 pt-3 border-t border-gray-50">
                           <span className="text-lg font-bold text-secondary">
                             ${product.price.toLocaleString()}
+                            
                           </span>
                           <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center hover:bg-zinc-800 transition-colors shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" className="bi bi-bag-fill" viewBox="0 0 16 16">
-  <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4z"/>
-</svg>
+
+                            
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" className="bi bi-bag-fill" viewBox="0 0 16 16">
+                                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4z"/>
+                              </svg>
+                            
                           </div>
+                          
+                          
                         </div>
 
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
 

@@ -4,6 +4,14 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import {
+  MapPin,
+  Check,
+  
+} from 'lucide-react';
+
+import AddressAutocomplete from '@/app/components/AddressAutocomplete';
+import 'leaflet/dist/leaflet.css';
 
 interface CartItem {
   id: string;
@@ -36,7 +44,14 @@ export default function CartPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
-
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    address: '',
+    latitude: 0,
+    longitude: 0,
+  });
   useEffect(() => {
     if (!session) {
       router.push('/login');
@@ -90,6 +105,11 @@ export default function CartPage() {
     }
   };
 
+  useEffect(() => {
+  if (session) {
+    fetchWishlist();
+  }
+}, [session]);
 
   const fetchWishlist = async () => {
   try {
@@ -258,23 +278,46 @@ const moveToCart = async (product: any) => {
             <Link href="/products" className="w-full block text-center bg-gray-200 text-black py-3 rounded-lg font-bold hover:bg-gray-300">
               Continue Shopping
             </Link>
+            {/* Address Autocomplete panel */}
+            <div className="bg-white dark:bg-zinc-900 border border-[#e5eeff] dark:border-zinc-800/30 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+              <h3 className="font-heading text-lg font-bold text-[#0b1c30] dark:text-zinc-50 border-b border-[#e5eeff] dark:border-zinc-800 pb-3 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-[#6c2ce6]" />
+                Home Address Coordinate Settings
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-[#45464d] dark:text-zinc-400 mb-1.5 uppercase tracking-wider">
+                    Physical Address Search
+                  </label>
+                  <AddressAutocomplete
+                    value={formData.address}
+                    onChange={(address, lat, lng) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        address: address,
+                        latitude: lat,
+                        longitude: lng,
+                      }));
+                    }}
+                    
+                  />
+                  <p className="text-[10px] text-[#45464d] dark:text-zinc-500 mt-1.5 uppercase tracking-wider font-semibold">
+                    🔍 Type to search coordinates powered by Geoapify
+                  </p>
+                </div>
+
+                
+              </div>
+            </div>
           </div>
                     {/* WISHLIST SECTION */}
-          <div className="mt-12">
+          <div className="mt-12 ">
             <h2 className="text-3xl font-bold text-black mb-2">My Wish List</h2>
-            <p className="text-gray-600 mb-8">
-              You have {wishlistItems.length} {wishlistItems.length === 1 ? 'item' : 'items'} saved for later.
-            </p>
-
-            {wishlistItems.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-md p-12 text-center">
-                <p className="text-gray-600 mb-4">Your wishlist is empty</p>
-                <Link href="/products" className="text-blue-600 hover:underline">
-                  Continue Shopping
-                </Link>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {wishlistItems.length === 0 ? (
+               <div>Your wishlist is empty</div>
+                ) : (
+              <div className="grid w-150 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {wishlistItems.map((item) => (
                   <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
                     {/* Image */}
