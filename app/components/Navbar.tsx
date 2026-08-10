@@ -224,6 +224,17 @@ export default function Navbar() {
               >
                 Products
               </Link>
+              <Link
+                href="/cart"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block px-3 py-2 rounded-lg text-base font-medium ${
+                  isActive('/cart')
+                    ? 'bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                }`}
+              >
+                Cart
+              </Link>
           <Link
             href="/pricing"
             onClick={() => setMobileMenuOpen(false)}

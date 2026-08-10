@@ -3,7 +3,7 @@
 import {useSession } from 'next-auth/react';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, Heart, ChevronRight, Eye, Star, Truck, Headphones, ShieldCheck, ArrowRight, X, Search, Sparkles, ShoppingBag} from 'lucide-react';
+import { ShoppingCart, Heart, ChevronLeft, ChevronRight, Eye, Star, Truck, Headphones, ShieldCheck, ArrowRight, X, Search, Sparkles, ShoppingBag} from 'lucide-react';
 
 interface Product {
   id: number;
@@ -40,6 +40,51 @@ export default function Home() {
   const [trendFilter, setTrendFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = useMemo(() => [
+    {
+      id: 1,
+      badge: "Luxury Premium Lifestyle",
+      title: "Redefine Your Lifestyle",
+      subtitle: "Curated premium essentials for the modern professional. Experience the absolute pinnacle of design, rich functionality, and timeless material elegance.",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC3akQD8Wzt78ji7Ogxn6SEmCK9omkyayl4mfqGU_jnJTb4pbaZpU8wS1fd1Qh2efNU9cF5tDTiC3xeVViaepeB8eEvOUFhuG8OnFt4V7CyHsU4CaSVIaNcGAuUTxMO1Eq91qXPF9--wOgjzobID-n4eyqKcaMJs6utDoWlpXCotOAmulQFdpnkgcQWghgj-QhEePblkuFI0LHjNYbHDprCcLmqrW6rWbDRlU-w3Y6WpiQ2t1ClYwTFFAVdCsJj5tOTt3jKLo1Q2ftl",
+      primaryLink: "/products",
+      primaryText: "Shop Now",
+      secondaryLink: "/products",
+      secondaryText: "Explore Collections"
+    },
+    {
+      id: 2,
+      badge: "Signature Collection",
+      title: "The Art of Precision",
+      subtitle: "Engineered for excellence. Elevate your everyday wardrobe and routine with our masterfully crafted watches, wallets and accessories.",
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1600&auto=format&fit=crop&q=80",
+      primaryLink: "/products",
+      primaryText: "View Signature Series",
+      secondaryLink: "/products",
+      secondaryText: "Discover Watches"
+    },
+    {
+      id: 3,
+      badge: "Acoustics & Sound",
+      title: "Immersive Soundscapes",
+      subtitle: "Experience high-fidelity sound designed to move you. Crafted with active noise cancellation and industry-grade studio acoustics.",
+      image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=1600&auto=format&fit=crop&q=80",
+      primaryLink: "/products",
+      primaryText: "Shop Audio",
+      secondaryLink: "/products",
+      secondaryText: "Learn More"
+    }
+  ], []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
 
   const productsSectionRef = useRef<HTMLDivElement>(null);
   const collectionsSectionRef = useRef<HTMLDivElement>(null);
@@ -198,51 +243,103 @@ const toggleWishlist = async (productIdStr: string) => {
       
 
       {/* Main Hero Container */}
-      <main className="relative min-h-[580px] md:h-[760px] flex items-center overflow-hidden">
+      <main className="relative min-h-[580px] md:h-[760px] flex items-center overflow-hidden group">
         
-        {/* Hero Section */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-[4000ms] ease-out hover:scale-105"
-          style={{ 
-            backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuC3akQD8Wzt78ji7Ogxn6SEmCK9omkyayl4mfqGU_jnJTb4pbaZpU8wS1fd1Qh2efNU9cF5tDTiC3xeVViaepeB8eEvOUFhuG8OnFt4V7CyHsU4CaSVIaNcGAuUTxMO1Eq91qXPF9--wOgjzobID-n4eyqKcaMJs6utDoWlpXCotOAmulQFdpnkgcQWghgj-QhEePblkuFI0LHjNYbHDprCcLmqrW6rWbDRlU-w3Y6WpiQ2t1ClYwTFFAVdCsJj5tOTt3jKLo1Q2ftl')" 
-          }}
-        />
-        {/* Dark overlay for text contrast */}
-        <div className="absolute inset-0 bg-black/40 md:bg-black/35" />
+        {slides.map((slide, index) => {
+          const isActive = index === currentSlide;
+          return (
+            <div
+              key={slide.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+              }`}
+            >
+              {/* Background with scaling effect on active */}
+              <div 
+                className={`absolute inset-0 bg-cover bg-center transition-transform duration-[6000ms] ease-out ${
+                  isActive ? 'scale-105' : 'scale-100'
+                }`}
+                style={{ 
+                  backgroundImage: `url('${slide.image}')` 
+                }}
+              />
+              {/* Dark overlay for text contrast */}
+              <div className="absolute inset-0 bg-black/45 md:bg-black/35" />
 
-        <div className="relative z-10 px-6 md:px-16 max-w-7xl mx-auto w-full">
-          <div className="max-w-2xl text-white">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-6 animate-fade-in">
-              <Sparkles className="w-6 h-6 text-[#FFD700]" />
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#FFD700]">
-                Luxury Premium Lifestyle</span>
+              <div className="relative z-10 px-6 md:px-16 max-w-7xl mx-auto w-full h-full flex items-center">
+                <div className="max-w-2xl text-white">
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-6 transition-all duration-700 delay-300 transform ${
+                    isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                  }`}>
+                    <Sparkles className="w-4 h-4 text-[#FFD700]" />
+                    <span className="text-[10px] font-semibold tracking-wider uppercase text-[#FFD700]">
+                      {slide.badge}
+                    </span>
+                  </div>
+                  
+                  <h1 className={`font-bold text-4xl md:text-6xl mb-6 leading-tight tracking-tight drop-shadow-sm transition-all duration-700 delay-500 transform ${
+                    isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                  }`}>
+                    {slide.title}
+                  </h1>
+                  <p className={`text-base md:text-lg mb-8 opacity-90 leading-relaxed font-light drop-shadow-sm max-w-xl transition-all duration-700 delay-700 transform ${
+                    isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                  }`}>
+                    {slide.subtitle}
+                  </p>
+                  
+                  <div className={`flex flex-col sm:flex-row gap-4 transition-all duration-700 delay-900 transform ${
+                    isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                  }`}>
+                    <Link 
+                      href={slide.primaryLink}
+                      className="bg-[#6c2ce6] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#6c2ce6]/95 transition-all shadow-lg hover:shadow-xl hover:shadow-[#6c2ce6]/25 transform active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      {slide.primaryText}
+                    </Link>
+                    <Link 
+                      href={slide.secondaryLink}
+                      className="border border-white/50 text-white backdrop-blur-sm px-8 py-4 rounded-xl font-semibold hover:bg-white/15 transition-all cursor-pointer flex items-center justify-center"
+                    >
+                      {slide.secondaryText}
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <h1 className="font-bold text-4xl md:text-6xl mb-6 leading-tight tracking-tight drop-shadow-sm">
-              Redefine Your Lifestyle
-            </h1>
-            <p className="text-base md:text-lg mb-8 opacity-95 leading-relaxed font-light drop-shadow-sm max-w-xl">
-              Curated premium essentials for the modern professional. Experience the absolute pinnacle of design, rich functionality, and timeless material elegance.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link 
-                href='/products'
-                className="bg-[#6c2ce6] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#6c2ce6]/95 transition-all shadow-lg hover:shadow-xl hover:shadow-[#6c2ce6]/25 transform active:scale-98 cursor-pointer flex items-center justify-center gap-2 group"
-              >
-                Shop Now
-                
-              </Link>
-              <Link 
-                href='/products'
-                className="border border-white/50 text-white backdrop-blur-sm px-8 py-4 rounded-xl font-semibold hover:bg-white/15 transition-all cursor-pointer flex items-center justify-center"
-              >
-                Explore Collections
-              </Link>
-            </div>
-          </div>
+          );
+        })}
+
+        {/* Minimalist Slide Navigation Arrows (visible on hover) */}
+        <button
+          onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
+          className="absolute left-6 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 hover:border-white/20 backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 cursor-pointer hidden md:flex items-center justify-center shadow-lg active:scale-95 animate-fade-in"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
+          className="absolute right-6 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 hover:border-white/20 backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 cursor-pointer hidden md:flex items-center justify-center shadow-lg active:scale-95 animate-fade-in"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+
+        {/* Minimalist Slide Indicators (Dots) */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2.5">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                index === currentSlide ? 'w-8 bg-[#6c2ce6]' : 'w-2 bg-white/40 hover:bg-white/70'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
-        </main>
+      </main>
 
         {/* Product Showcase Section */}
        <section ref={collectionsSectionRef} className="py-20 px-4 md:px-16 max-w-7xl mx-auto w-full scroll-mt-20">
