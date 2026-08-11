@@ -21,10 +21,12 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [toasts, setToasts] = useState<{id: number, message: string, type: 'success' | 'warning' | 'info'}[]>([]);
 
   useEffect(() => {
     fetchProduct();
   }, [params.id]);
+
 
   const fetchProduct = async () => {
     try {
@@ -39,7 +41,7 @@ export default function ProductDetailPage() {
   };
   const handleAddToCart = async () => {
   if (!product) {
-    alert('Product not found');
+    showToast('Product not found');
     return;
   }
 
@@ -55,7 +57,7 @@ export default function ProductDetailPage() {
     });
 
     if (res.ok) {
-      alert('Added to cart!');
+      showToast('Added to cart!');
       setQuantity(1);
     }
   } catch (error) {
@@ -79,6 +81,14 @@ export default function ProductDetailPage() {
       </div>
     );
   }
+
+  const showToast = (message: string, type: 'success' | 'warning' | 'info' = 'info') => {
+  const id = Date.now();
+  setToasts(prev => [...prev, { id, message, type }]);
+  setTimeout(() => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  }, 3000);
+};
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -165,6 +175,22 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Toast Notifications */}
+<div className="fixed bottom-6 left-6 z-50 flex flex-col gap-2">
+  {toasts.map(toast => (
+    <div 
+      key={toast.id}
+      className={`px-4 py-3 rounded-lg text-white text-sm font-semibold ${
+        toast.type === 'success' ? 'bg-green-500' :
+        toast.type === 'warning' ? 'bg-red-500' :
+        'bg-green-500'
+      }`}
+    >
+      {toast.message}
+    </div>
+  ))}
+</div>
     </div>
   );
 }

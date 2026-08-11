@@ -32,6 +32,11 @@ interface WishlistItem {
   };
 }
 
+interface Toast {
+  id: number;
+  message: string;
+  type?: 'success' | 'info' | 'warning';
+}
 
 
 export default function CartPage() {
@@ -41,6 +46,7 @@ export default function CartPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const [toasts, setToasts] = useState<{id: number, message: string, type: 'success' | 'warning' | 'info'}[]>([]);
   
  
   
@@ -130,6 +136,14 @@ const removeFromWishlist = async (itemId: string) => {
   }
 };
 
+const showToast = (message: string, type: 'success' | 'warning' | 'info' = 'info') => {
+  const id = Date.now();
+  setToasts(prev => [...prev, { id, message, type }]);
+  setTimeout(() => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  }, 3000);
+};
+
 const moveToCart = async (product: any) => {
   try {
     await fetch('/api/cart/add', {
@@ -141,7 +155,7 @@ const moveToCart = async (product: any) => {
         quantity: 1,
       }),
     });
-    alert('Added to cart!');
+    showToast('Added to cart!');
     fetchCart();
   } catch (error) {
     console.error('Error:', error);
@@ -328,6 +342,22 @@ const moveToCart = async (product: any) => {
           </div>
         </div>
       </div>
+      {/* Toast Notification */}
+      <div className="fixed bottom-6 left-6 z-50 flex flex-col gap-2">
+  {toasts.map(toast => (
+    <div 
+      key={toast.id}
+      className={`px-4 py-3 rounded-lg text-white text-sm font-semibold ${
+        toast.type === 'success' ? 'bg-green-500' :
+        toast.type === 'warning' ? 'bg-red-500' :
+        'bg-green-500'
+      }`}
+    >
+      {toast.message}
+    </div>
+  ))}
+</div>
+
     </div>
   );
 }
