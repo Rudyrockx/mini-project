@@ -214,8 +214,10 @@ export default function CheckoutPage() {
         },
       };
 
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
+      if (typeof window !== 'undefined') {
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+      } 
     } catch (error) {
       console.error('Error:', error);
       alert('Payment error');
