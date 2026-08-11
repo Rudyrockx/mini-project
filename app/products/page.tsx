@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import {Heart} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import { Router } from 'next/router';
@@ -18,7 +19,11 @@ interface Product {
   category: string;
 }
 
-export default function ProductsPage() {
+
+
+
+function ProductsContent() {
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState('');
@@ -27,7 +32,7 @@ export default function ProductsPage() {
   const [maxPrice, setMaxPrice] = useState('');
   const [minRating, setMinRating] = useState('');
   const [page, setPage] = useState(1);
-  const searchParams = useSearchParams();
+  
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -414,5 +419,13 @@ const toggleWishlist = async (productId: string) => {
 
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {  // ← Keep this
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }
