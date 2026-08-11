@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 
 
-import {Icon} from 'leaflet'
+
 
 import dynamic from 'next/dynamic';
 import {
@@ -30,6 +30,7 @@ const MapContainer = dynamic(() => import('react-leaflet').then((mod) => mod.Map
 const TileLayer = dynamic(() => import('react-leaflet').then((mod) => mod.TileLayer), { ssr: false });
 const Marker = dynamic(() => import('react-leaflet').then((mod) => mod.Marker), { ssr: false });
 const Popup = dynamic(() => import('react-leaflet').then((mod) => mod.Popup), { ssr: false });
+
 
 
 interface CartItem {
@@ -79,6 +80,7 @@ export default function CheckoutPage() {
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
+  
 
   useEffect(() => {
     if (!session) {
@@ -389,9 +391,9 @@ export default function CheckoutPage() {
                       attribution='&copy; OpenStreetMap contributors'
                     />
                     {formData.latitude && formData.longitude && (
-                      <Marker position={[formData.latitude, formData.longitude]} icon={new Icon({iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png', iconSize: [25, 41]})}>
+                     <Marker position={[formData.latitude, formData.longitude]}>
                         <Popup>{formData.address || 'Your Location'}</Popup>
-                      </Marker>
+                    </Marker>
                     )}
                   </MapContainer>
                 )}
