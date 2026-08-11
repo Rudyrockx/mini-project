@@ -266,8 +266,9 @@ const toggleWishlist = async (productId: string) => {
                 {products.map((product) => (
                   
                   <div 
-                      onClick={() => router.push(`/products/${product.id}`)}
-                      className="group"
+                    key={product.id}
+                    onClick={() => router.push(`/products/${product.id}`)}
+                    className="group"
                     >
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer h-full flex flex-col overflow-hidden">
                       
