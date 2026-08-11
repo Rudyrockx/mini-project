@@ -429,10 +429,10 @@ export default function CheckoutPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-slate-900">Standard Shipping</p>
-                      <p className="text-xs text-slate-500 mt-0.5">3-5 Business Days</p>
+                      <p className="text-xs text-slate-500 mt-0.5">3-5 Business Dayes</p>
                     </div>
                   </div>
-                  <span className="text-sm font-semibold text-slate-900">Free</span>
+                  <span className="text-sm font-semibold text-slate-900">FREE</span>
                 </label>
 
                 {/* Express Delivery */}
