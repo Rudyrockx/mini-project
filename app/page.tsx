@@ -346,7 +346,7 @@ const toggleWishlist = async (productIdStr: string) => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#0b1c30]">Curated Collections</h2>
-            <p className="text-[#45464d] text-base mt-2">Discover the perfect, handcrafted fit for your dynamic lifestyle.</p>
+            <p className="text-[#45464d] text-base mt-2">Discover the perfect, handcrafted fit for your dynamic lifestyle choices.</p>
           </div>
           <button 
             onClick={() => {
