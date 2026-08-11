@@ -406,7 +406,7 @@ export default function CheckoutPage() {
                 <div className="text-purple-600">
                   <Package className="w-5 h-5 stroke-[2]" />
                 </div>
-                <h2 className="text-lg font-semibold text-slate-900">Shipping Method</h2>
+                <h2 className="text-lg font-semibold text-slate-900">Shipping Methods</h2>
               </div>
 
               <div className="space-y-3">
