@@ -96,6 +96,18 @@ export default function Navbar() {
               >
                Cart
               </Link>
+              {session?.user?.role?.toLowerCase() === 'admin' && (
+                 <Link
+                href="/admin"
+                className={`text-sm font-medium transition-colors hover:text-black dark:hover:text-black hover:bg-white ${
+                  isActive('/admin')
+                    ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
+                    : 'text-white dark:text-white bg-purple-500 rounded-lg p-1'
+                }`}
+              >
+                Admin
+              </Link>
+              )}
             </div>
           </div>
 
