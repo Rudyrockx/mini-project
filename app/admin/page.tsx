@@ -129,7 +129,7 @@ export default function AdminPage() {
           </Link>
         </div>
         <div className="flex justify-between items-center mb-8">
-  <h1 className="text-4xl font-bold text-black">Admin Panel</h1>
+  
   <div className="flex gap-4">
     <Link
       href="/admin/add-products"
