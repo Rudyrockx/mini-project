@@ -32,11 +32,13 @@ function ProductsContent() {
   const [maxPrice, setMaxPrice] = useState('');
   const [minRating, setMinRating] = useState('');
   const [page, setPage] = useState(1);
-  
+  const [discounts, setDiscounts] = useState<{[key: string]: number}>({});
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const router = useRouter();
+  
+  
   const [pagination, setPagination] = useState({
     total: 0,
     pageSize: 12,
@@ -130,6 +132,8 @@ const toggleWishlist = async (productId: string) => {
     }
   };
 
+
+
   const resetFilters = () => {
     setSelectedCategory('');
     setMinPrice('');
@@ -138,10 +142,24 @@ const toggleWishlist = async (productId: string) => {
     setPage(1);
   };
 
+
+
+useEffect(() => {
+  products.forEach(async (product) => {
+    const discount = await fetch(`/api/products/${product.id}/discount`)
+      .then(r => r.json())
+      .then(d => d.discount || 0);
+    
+    setDiscounts(prev => ({...prev, [product.id]: discount}));
+  });
+}, [products]);
+
+
   if (loading) {
     return <div className="p-8 text-center">Loading products...</div>;
   }
 
+  
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
@@ -268,12 +286,14 @@ const toggleWishlist = async (productId: string) => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 
-                {products.map((product) => (
-                  
-                  <div 
-                    key={product.id}
-                    onClick={() => router.push(`/products/${product.id}`)}
-                    className="group"
+                {products.map((product) => {
+                  const discount = discounts[product.id] || 0;
+                  const finalPrice = product.price * (1 - discount / 100);
+                  return (
+                    <div 
+                      key={product.id}
+                      onClick={() => router.push(`/products/${product.id}`)}
+                      className="group"
                     >
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer h-full flex flex-col overflow-hidden">
                       
@@ -301,7 +321,11 @@ const toggleWishlist = async (productId: string) => {
                         </button>
                         
                         {/* Product Badges */}
-                        {product.price > 1000 ? (
+                        {discount > 0 ? (
+                          <span className="absolute top-3 left-3 bg-red-600 text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest shadow-sm">
+                            {discount}% OFF
+                          </span>
+                        ) : product.price > 1000 ? (
                           <span className="absolute top-3 left-3 bg-black text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest shadow-sm">
                             Limited
                           </span>
@@ -347,26 +371,34 @@ const toggleWishlist = async (productId: string) => {
 
                         {/* Price and Cart Button */}
                         <div className="flex justify-between items-center mt-5 pt-3 border-t border-gray-50">
-                          <span className="text-lg font-bold text-secondary">
-                            ${product.price.toLocaleString()}
-                            
-                          </span>
-                          <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center hover:bg-zinc-800 transition-colors shadow-sm">
-
-                            
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" className="bi bi-bag-fill" viewBox="0 0 16 16">
-                                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4z"/>
-                              </svg>
-                            
+                          <div className="flex items-baseline gap-2">
+                            {discount > 0 ? (
+                              <>
+                                <span className="text-lg font-bold text-red-600">
+                                  ${finalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </span>
+                                <span className="text-xs text-gray-400 line-through font-normal">
+                                  ${product.price.toLocaleString()}
+                                </span>
+                              </>
+                            ) : (
+                              <span className="text-lg font-bold text-secondary">
+                                ${product.price.toLocaleString()}
+                              </span>
+                            )}
                           </div>
-                          
-                          
+                          <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center hover:bg-zinc-800 transition-colors shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" className="bi bi-bag-fill" viewBox="0 0 16 16">
+                              <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4z"/>
+                            </svg>
+                          </div>
                         </div>
 
                       </div>
                     </div>
                   </div>
-                ))}
+                );
+              })}
               </div>
 
               {/* Pagination */}
@@ -420,8 +452,9 @@ const toggleWishlist = async (productId: string) => {
       </div>
     </div>
   );
-}
 
+
+}
 export default function ProductsPage() {  // ← Keep this
   return (
     <Suspense fallback={<div>Loading...</div>}>

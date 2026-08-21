@@ -88,6 +88,7 @@ model Product {
   name      String
   description String
   price     Float
+  discountPercent Int @default(0)
   image     String?
   category  String
   rating    Float    @default(0)
@@ -150,4 +151,14 @@ model WishlistItem {
   wishlistId String
   wishlist  Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
   productId String
+}
+
+model DiscountRule {
+  id       String @id @default(cuid())
+  category String 
+  minPrice Float
+  maxPrice Float
+  discountPercentage Int 
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
 }

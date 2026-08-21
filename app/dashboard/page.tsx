@@ -141,7 +141,7 @@ export default function DashboardPage() {
   const activeSub = profile?.activeSubscription;
 
   return (
-    <div className="bg-[#f8f9ff] dark:bg-zinc-950 relative min-h-[calc(100vh-4rem)] p-4 sm:p-8 lg:p-12 overflow-hidden selection:bg-[#6c2ce6]/20">
+    <div className="relative min-h-[calc(100vh-4rem)] p-4 sm:p-8 lg:p-12 overflow-hidden selection:bg-[#6c2ce6]/20">
       {/* Decorative ambient backgrounds */}
       <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#6c2ce6]/5 dark:bg-[#6c2ce6]/10 blur-3xl pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#854eff]/5 dark:bg-[#854eff]/10 blur-3xl pointer-events-none" />
@@ -451,4 +451,4 @@ export default function DashboardPage() {
     </div>
   );
 }
-
+
